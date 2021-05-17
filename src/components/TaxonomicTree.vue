@@ -4,7 +4,7 @@
       type="button"
       icon="pi pi-plus"
       label="Expand All"
-      @click="expandAll(nodes)"
+      @click="expandAll"
       :nodes="nodes"
     />
     <Button
@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref } from "vue";
 import Tree from "primevue/tree";
 import Button from "primevue/button";
 
@@ -32,32 +32,22 @@ export default defineComponent({
   components: { Tree, Button },
   setup(props) {
     const selectedKeys = ref<any>({});
-    const nodes = computed(() => {
-      return props.json.root;
-    });
+    const nodes = ref(props.json.root);
     const expandedKeys = ref<any>({});
-
-    // comment éviter la répétition du rappel d'expandAll ?
-    const expandAll = (nodes: any) => {
-      if (nodes.value) {
-        for (let i in nodes.value) {
-          const node = nodes.value[i];
-          expandedKeys.value[node.key] = true;
-          if (node.children) {
-            expandAll(node.children);
-          }
-        }
-      } else {
-        for (let i in nodes) {
-          const node = nodes[i];
-          expandedKeys.value[node.key] = true;
-          if (node.children) {
-            expandAll(node.children);
-          }
+    const expandAll = () => {
+      for (let node of nodes.value) {
+        expandNode(node);
+      }
+      expandedKeys.value = { ...expandedKeys.value };
+    };
+    const expandNode = (node:any) => {
+      if (node.children && node.children.length) {
+        expandedKeys.value[node.key] = true;
+        for (let child of node.children) {
+          expandNode(child);
         }
       }
     };
-
     const collapseAll = () => {
       expandedKeys.value = {};
     };

@@ -1,12 +1,13 @@
 <template>
-  <Home />
+  <Header />
+  <router-view></router-view>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import Home from "./pages/Home.vue"
+import Header from "./components/Header.vue"
 
 export default defineComponent ({
-  components: { Home }
+  components: { Header }
 })
 </script>
