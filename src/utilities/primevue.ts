@@ -1,6 +1,6 @@
-import {newTree} from '../types/types'
+import { newTree } from '../types/types'
 
-export default function formatTree(elem: any, key: string):newTree {
+export default function formatTree(elem: any, key: string): newTree {
     // find the tree
     if (elem.tree) {
         formatTree(elem.tree, key);
@@ -11,7 +11,7 @@ export default function formatTree(elem: any, key: string):newTree {
         delete elem.text;
         delete elem.children;
         elem.root.forEach(
-            (child: any, index:number) => { formatTree(child, `${index}`); }
+            (child: any, index: number) => { formatTree(child, `${index}`); }
         )
     }
     // format the tree
