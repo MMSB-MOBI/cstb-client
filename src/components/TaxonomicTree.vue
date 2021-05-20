@@ -1,43 +1,36 @@
 <template>
   <div>
-    <div class="flex mt-3 mb-3">
-      <div class="mt-auto mr-auto">
-        <form @submit.prevent="search">
-          <input
-            type="search"
-            placeholder="Search for an organism"
-            class="border rounded"
-          />
-          <button class="border rounded bg-gray-200">Search</button>
-        </form>
+    <!-- <div class="flex mt-3 mb-3">
+      <div>
+        <Button
+          type="button"
+          icon="pi pi-plus"
+          label="Expand All"
+          @click="expandAll"
+          :nodes="nodes"
+        />
       </div>
-      <!-- <div>
-      <Button
-        type="button"
-        icon="pi pi-plus"
-        label="Expand All"
-        @click="expandAll"
-        :nodes="nodes"
-      />
-    </div>
-    <div>
-      <Button
-        type="button"
-        icon="pi pi-plus"
-        label="Collapse All"
-        @click="collapseAll"
-      />
+
+      <div>
+        <Button
+          type="button"
+          icon="pi pi-plus"
+          label="Collapse All"
+          @click="collapseAll"
+        />
+      </div>
     </div> -->
-    </div>
 
     <Tree
-      :value="json"
+      :value="tree"
+      :filter="true"
+      filterMode="strict"
       :expandedKeys="expandedKeys"
       selectionMode="checkbox"
       v-model:selectionKeys="selectedKeys"
       @node-select="onNodeSelect"
       @node-unselect="onNodeUnselect"
-
+      @node-expand="onNodeExpand"
     />
     <!-- <button @click="resetTree" class="p-2 bg-red-500 border rounded">
       Reset tree
@@ -46,39 +39,52 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref, watch } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import Tree from "primevue/tree";
 // import Button from "primevue/button";
 
 export default defineComponent({
-  props: ["json"],
+  props: ["tree", "updatedSelectedKeys", "updatedExpandedKeys"],
   components: { Tree },
-  setup(_, { emit }) {
-    // const { json } = toRefs(props);
-
-    // onMounted(() => {
-    //   nodes.value = props.json.root;
-    // });
-
+  setup(props, { emit }) {
     const selectedKeys = ref<any>({});
     const expandedKeys = ref<any>({});
-    // const nodes = ref();
-    const resetTree = () => {
-      emit("reset");
-      selectedKeys.value = {};
-    };
 
     const onNodeSelect = (node: any) => {
-      emit("on-node-select", node);
-      // node.selectable=false;
-      // node.style="color:gray"
-      // console.log();
+      console.log(selectedKeys.value);
+      emit("on-node-select", node, selectedKeys);
     };
 
-    const onNodeUnselect = (node:any) => {
-      emit("on-node-unselect", node);
+    const onNodeUnselect = (node: any) => {      
+      emit("on-node-unselect", node, selectedKeys);
     };
- 
+
+    const onNodeExpand = (expandedKeys:any) => {
+      console.log(expandedKeys.children);
+      emit("on-node-expand", expandedKeys)
+    }
+
+    if (props.updatedSelectedKeys) {
+      const newSelectedKeys = computed(() => {
+        return props.updatedSelectedKeys;
+      });
+      selectedKeys.value = newSelectedKeys.value;
+    }
+
+    if (props.updatedExpandedKeys) {
+      const newExpandedKeys = computed(() => {
+        return props.updatedExpandedKeys;
+      });
+      expandedKeys.value = newExpandedKeys.value;
+    }
+
+    // const nodes = ref(props);
+
+    // const resetTree = () => {
+    //   emit("reset");
+    //   selectedKeys.value = {};
+    // };
+
     // const expandAll = () => {
     //   for (let node of nodes.value) {
     //     expandNode(node);
@@ -100,11 +106,11 @@ export default defineComponent({
     // };
 
     return {
-      resetTree,
+      onNodeSelect,
+      onNodeUnselect,
+      onNodeExpand,
       expandedKeys,
       selectedKeys,
-      onNodeSelect,
-      onNodeUnselect
     };
   },
 });
