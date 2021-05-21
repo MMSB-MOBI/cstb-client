@@ -32,6 +32,7 @@
       @node-unselect="onNodeUnselect"
       @node-expand="onNodeExpand"
     />
+    
     <!-- <button @click="resetTree" class="p-2 bg-red-500 border rounded">
       Reset tree
     </button> -->
@@ -51,7 +52,6 @@ export default defineComponent({
     const expandedKeys = ref<any>({});
 
     const onNodeSelect = (node: any) => {
-      console.log(selectedKeys.value);
       emit("on-node-select", node, selectedKeys);
     };
 
@@ -59,8 +59,7 @@ export default defineComponent({
       emit("on-node-unselect", node, selectedKeys);
     };
 
-    const onNodeExpand = (expandedKeys:any) => {
-      console.log(expandedKeys.children);
+    const onNodeExpand = (expandedKeys:any) => { 
       emit("on-node-expand", expandedKeys)
     }
 

@@ -1,13 +1,62 @@
 <template>
-  Specific gene
+  <div>
+    <p class="py-5 px-3">
+      Here you can search for sgRNA construct(s) in one or more bacterial
+      genomes to use in CRISPRinterference. You must input a sequence, whose
+      homologs will be found in selected bacteria, and common sgRNAs, if they
+      exist, will be found. You can also choose bacteria in which you want to
+      avoid sgRNA hybridisation.
+    </p>
+
+    <div v-if="!checked" class="grid grid-cols-2">
+      <div class="px-7">
+        <p class="py-2 text-2xl">Paste here your own sequence...</p>
+        <textarea
+          rows="10"
+          cols="80"
+          class="px-5 py-3 border border-gray-500 bg-gray-100"
+          style="font-family: 'Courier New', Courier, monospace"
+        ></textarea>
+      </div>
+
+      <div class="px-7">
+        <p class="py-2 text-2xl">or upload a fasta file.</p>
+        <div class="flex flex-col space-y-5">
+          <input label="Choose file" type="file" />
+          <button
+            @click="loadFile"
+            class="p-3 text-white font-bold bg-green-500 border rounded border-gray-500"
+          >
+            &#60;&#60;&#60; Load file to the area
+          </button>
+        </div>
+      </div>
+
+      <div class="col-span-2 py-7 text-center">
+        <button
+          @click="next"
+          class="py-3 px-7 text-white font-bold bg-green-500 border rounded border-gray-500"
+        >
+          Next >>
+        </button>
+      </div>
+    </div>
+
+    <div v-else class="grid grid-cols-2">
+      <div class=""></div>
+      <div class=""></div>
+    </div>
+  </div>
 </template>
 
-<script>
-export default {
-
-}
+<script lang="ts">
+import { defineComponent } from "vue";
+export default defineComponent({
+  setup() {
+    const loadFile = () => {
+      console.log("load file to area");
+    };
+    return { loadFile };
+  },
+});
 </script>
-
-<style>
-
-</style>
