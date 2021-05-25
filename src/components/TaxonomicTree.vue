@@ -31,37 +31,48 @@
       @node-select="onNodeSelect"
       @node-unselect="onNodeUnselect"
       @node-expand="onNodeExpand"
+      @reset-tree="resetTree"
     />
-    
-    <!-- <button @click="resetTree" class="p-2 bg-red-500 border rounded">
+
+    <button
+      @click="resetTree"
+      class="my-1 p-1 bg-red-500 border border-gray-500 rounded text-white"
+    >
       Reset tree
-    </button> -->
+    </button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, Ref, computed } from "vue";
 import Tree from "primevue/tree";
 // import Button from "primevue/button";
+import { SelectedKeys, Node } from "../types/TreeTypes";
 
 export default defineComponent({
   props: ["tree", "updatedSelectedKeys", "updatedExpandedKeys"],
   components: { Tree },
   setup(props, { emit }) {
-    const selectedKeys = ref<any>({});
-    const expandedKeys = ref<any>({});
+    const selectedKeys: Ref<any> = ref({});
+    const expandedKeys: Ref<any> = ref({});
 
-    const onNodeSelect = (node: any) => {
+    const onNodeSelect = (node: Node) => {
       emit("on-node-select", node, selectedKeys);
     };
 
-    const onNodeUnselect = (node: any) => {      
+    const onNodeUnselect = (node: Node) => {
       emit("on-node-unselect", node, selectedKeys);
     };
 
-    const onNodeExpand = (expandedKeys:any) => { 
-      emit("on-node-expand", expandedKeys)
-    }
+    const onNodeExpand = () => {
+      emit("on-node-expand", expandedKeys);
+    };
+
+    const resetTree = () => {
+      selectedKeys.value = {};
+      expandedKeys.value = {};
+      emit("reset-tree");
+    };
 
     if (props.updatedSelectedKeys) {
       const newSelectedKeys = computed(() => {
@@ -76,13 +87,6 @@ export default defineComponent({
       });
       expandedKeys.value = newExpandedKeys.value;
     }
-
-    // const nodes = ref(props);
-
-    // const resetTree = () => {
-    //   emit("reset");
-    //   selectedKeys.value = {};
-    // };
 
     // const expandAll = () => {
     //   for (let node of nodes.value) {
@@ -110,6 +114,7 @@ export default defineComponent({
       onNodeExpand,
       expandedKeys,
       selectedKeys,
+      resetTree,
     };
   },
 });

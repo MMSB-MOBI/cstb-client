@@ -1,23 +1,18 @@
 import { ref, Ref } from 'vue'
-import NewTree from '../types/NewTree'
-import Node from '../types/Node'
+import { ExpandedKeys, NewTree, Node, SelectedKeys } from '../types/TreeTypes'
 
 export default class TreeWrapper {
     private _newTree: Ref<NewTree | undefined> = ref();
     private _newTreeIndex: Ref<{ [key: string]: Node } | undefined> = ref();
-    private _finalSelection: Ref<Node[]> = ref([]);
-    private _selectedKeys: Ref<any> = ref(); // interface à creer
-    private _expandedKeys: Ref<any> = ref();
-    // private _labels: Ref<any> = ref();
+    private _finalSelection: Ref<Node[] | undefined[]> = ref([]);
+    private _selectedKeys: Ref<SelectedKeys | undefined> = ref();
+    private _expandedKeys: Ref<ExpandedKeys | undefined> = ref();
     private _listTree: Ref<any> = ref();
-
-    // constructor() {
-    // }
 
     public set newTree(_: NewTree | undefined) {
         this._newTree.value = _;
     }
-    public get newTree(): undefined | NewTree {
+    public get newTree(): NewTree | undefined {
         return this._newTree.value
     }
     public set newTreeIndex(_: { [key: string]: Node } | undefined) {
@@ -26,30 +21,24 @@ export default class TreeWrapper {
     public get newTreeIndex(): { [key: string]: Node } | undefined {
         return this._newTreeIndex.value
     }
-    public set finalSelection(_: Node[]) {
+    public set finalSelection(_: Node[] | undefined[]) {
         this._finalSelection.value = _;
     }
-    public get finalSelection(): Node[] {
+    public get finalSelection(): Node[] | undefined[] {
         return this._finalSelection.value
     }
-    public set selectedKeys(_: any) {
+    public set selectedKeys(_: SelectedKeys | undefined) {
         this._selectedKeys.value = _;
     }
-    public get selectedKeys(): any {
+    public get selectedKeys(): SelectedKeys | undefined {
         return this._selectedKeys.value
     }
-    public set expandedKeys(_: any) {
+    public set expandedKeys(_: ExpandedKeys | undefined) {
         this._expandedKeys.value = _;
     }
-    public get expandedKeys(): any {
+    public get expandedKeys(): ExpandedKeys | undefined {
         return this._expandedKeys.value
     }
-    // public set labels(_: any) {
-    //     this._labels.value = _;
-    // }
-    // public get labels(): any {        
-    //     return this._labels.value
-    // }
     public set listTree(_: any) {
         this._listTree.value = _;
     }

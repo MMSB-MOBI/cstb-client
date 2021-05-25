@@ -16,7 +16,7 @@
           @on-node-select="onNodeSelectTree1"
           @on-node-unselect="onNodeUnselectTree1"
           @on-node-expand="onNodeExpandTree1"
-          @reset="reset(1)"
+          @reset-tree="resetTree1"
         />
       </div>
 
@@ -29,7 +29,7 @@
           @on-node-select="onNodeSelectTree2"
           @on-node-unselect="onNodeUnselectTree2"
           @on-node-expand="onNodeExpandTree2"
-          @reset="reset(2)"
+          @reset-tree="resetTree2"
         />
       </div>
 
@@ -48,7 +48,9 @@
         <p class="text-center py-1 text-green-500 font-bold">
           List of bacteria will be targeted:
         </p>
-        <div class="border px-5 py-3 overflow-auto h-80 bg-gray-100 border-gray-300">
+        <div
+          class="border px-5 py-3 overflow-auto h-80 bg-gray-100 border-gray-300"
+        >
           <div v-for="label in labels1" :key="label">
             {{ label }}
           </div>
@@ -59,14 +61,16 @@
         <p class="text-center py-1 text-red-500 font-bold">
           List of bacteria without target:
         </p>
-        <div class="border px-5 py-3 overflow-auto h-80 bg-gray-100 border-gray-300">
+        <div
+          class="border px-5 py-3 overflow-auto h-80 bg-gray-100 border-gray-300"
+        >
           <div v-for="label in labels2" :key="label">
             {{ label }}
           </div>
         </div>
       </div>
 
-      <div class="py-5 col-span-2 text-center">
+      <div v-if="!displayParameters" class="py-5 col-span-2 text-center">
         <p class="py-2 font-bold">Confirm your selection ?</p>
         <button
           @click="confirmedSelect"
@@ -81,6 +85,57 @@
           No
         </button>
       </div>
+
+      <div v-else class="col-span-2">
+        <p class="mt-3 text-center text-2xl font-bold">Other parameters</p>
+        <div class="grid grid-cols-3">
+          <div
+            class="px-6 py-5 mx-8 my-5 bg-gray-100 border rounded border-gray-400"
+          >
+            <p>PAM motif</p>
+            <select class="w-60 border border-gray-400">
+              <option>NGG</option>
+            </select>
+          </div>
+
+          <div
+            class="px-6 py-5 mx-8 my-5 bg-gray-100 border rounded border-gray-400"
+          >
+            <p>sgRNA length (without PAM motif)</p>
+            <select class="w-60 border border-gray-400">
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+            </select>
+          </div>
+
+          <div
+            class="px-6 py-1 mx-8 my-5 bg-gray-100 border rounded border-gray-400"
+          >
+            <p>Email</p>
+            <input
+              type="text"
+              label="email"
+              class="w-60 border border-gray-400 rounded"
+            />
+            <p class="text-sm">
+              Provide your email to be notified when your results are available
+              and to have access to them.
+            </p>
+          </div>
+
+          <div class="col-span-3 px-5 py-2 text-right">
+            <button
+              @click="submit"
+              class="p-3 text-white text-2xl font-bold bg-gradient-to-r from-green-700 to-green-400 rounded border border-black"
+            >
+              Submit >>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -90,6 +145,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import TaxonomicTree from "../components/TaxonomicTree.vue";
 import TaxonomyService from "../service/taxonomy";
 import treeWrapper from "./treeWrapper";
+import { SelectedKeys, ExpandedKeys, Node } from "../types/TreeTypes";
 
 export default defineComponent({
   components: { TaxonomicTree },
@@ -110,17 +166,39 @@ export default defineComponent({
       });
     });
 
-    // const reset = (treeNb: number) => {
-    //   if (treeNb === 1) {
-    //     finalSelection1.value = [];
-    //   } else if (treeNb === 2) {
-    //     finalSelection2.value = [];
-    //   }
-    // };
+    const resetBrowse = (treeNb: number) => {
+      const tree1: any = treeWrapper1.newTree;
+      const tree2: any = treeWrapper2.newTree;
+      if (treeNb === 1) {
+        if (tree1) {
+          for (const node in Object.entries(tree1)) {
+            browse(tree2[node], true);
+          }
+        }
+      } else if (treeNb === 2) {
+        if (tree2) {
+          for (const node in Object.entries(tree2)) {
+            browse(tree1[node], true);
+          }
+        }
+      }
+    };
 
-    const selectLeaf = (node: any, leaf: any[]) => {
+    const resetTree = (
+      currentWrapper: any,
+      otherWrapper: any,
+      treeNb: number
+    ) => {
+      currentWrapper.selectedKeys = {};
+      currentWrapper.expandedKeys = {};
+      otherWrapper.finalSelection = [];
+      otherWrapper.finalSelection = [];
+      resetBrowse(treeNb);
+    };
+
+    const selectLeaf = (node: Node, leaf: Node[]) => {
       if (node.children) {
-        node.children.forEach((child: any) => {
+        node.children.forEach((child: Node) => {
           selectLeaf(child, leaf);
         });
       } else {
@@ -129,10 +207,10 @@ export default defineComponent({
     };
 
     const selectUnselectNode = (
-      currentWrapper: any,
-      otherWrapper: any,
-      node: any,
-      selectedKeys: any,
+      currentWrapper: any, //TreeWrapper
+      otherWrapper: any, //TreeWrapper
+      node: Node,
+      selectedKeys: SelectedKeys,
       nodeSelected: boolean
     ) => {
       currentWrapper.selectedKeys = selectedKeys.value;
@@ -145,53 +223,60 @@ export default defineComponent({
         selectLeaf(node, currentWrapper.finalSelection);
         browse(node2, false);
       } else if (node2 && !nodeSelected) {
-        const _leaf: any[] = [];
+        const _leaf: Node[] = [];
         selectLeaf(node, _leaf);
         // update the final selection
         currentWrapper.finalSelection = currentWrapper.finalSelection.filter(
-          (node: any) => !_leaf.includes(node)
+          (node: Node) => !_leaf.includes(node)
         );
         browse(node2, true);
       }
     };
 
     // about tree 1
-    const onNodeSelectTree1 = (node: any, selectedKeys: any) => {
+    const onNodeSelectTree1 = (node: Node, selectedKeys: SelectedKeys) => {
       selectUnselectNode(treeWrapper1, treeWrapper2, node, selectedKeys, true);
     };
-    const onNodeUnselectTree1 = (node: any, selectedKeys: any) => {
+    const onNodeUnselectTree1 = (node: Node, selectedKeys: SelectedKeys) => {
       selectUnselectNode(treeWrapper1, treeWrapper2, node, selectedKeys, false);
     };
-    const onNodeExpandTree1 = (node: any, expandedKeys: any) => {
+    const onNodeExpandTree1 = (expandedKeys: ExpandedKeys) => {
       treeWrapper1.expandedKeys = expandedKeys;
+    };
+    const resetTree1 = () => {
+      resetTree(treeWrapper1, treeWrapper2, 1);
     };
 
     // about tree 2
-    const onNodeSelectTree2 = (node: any, selectedKeys: any) => {
+    const onNodeSelectTree2 = (node: Node, selectedKeys: SelectedKeys) => {
       selectUnselectNode(treeWrapper2, treeWrapper1, node, selectedKeys, true);
     };
-    const onNodeUnselectTree2 = (node: any, selectedKeys: any) => {
+    const onNodeUnselectTree2 = (node: Node, selectedKeys: SelectedKeys) => {
       selectUnselectNode(treeWrapper2, treeWrapper1, node, selectedKeys, false);
     };
-    const onNodeExpandTree2 = (expandedKeys: any) => {
+    const onNodeExpandTree2 = (expandedKeys: ExpandedKeys) => {
       treeWrapper2.expandedKeys = expandedKeys;
+    };
+    const resetTree2 = () => {
+      resetTree(treeWrapper2, treeWrapper1, 2);
     };
 
     // enable or disable the selection of leaves in a tree
-    function browse(node: any, activate: boolean) {
+    const browse = (node: Node, activate: boolean) => {
       if (!node.checked) {
         node.selectable = activate ? true : false;
         node.style = activate ? "color:#495057" : "color:#cccccc";
       }
       if (node.children) {
-        node.children.forEach((child: any) => browse(child, activate));
+        node.children.forEach((child: Node) => browse(child, activate));
       }
-    }
+    };
 
     // returns the final selection
     const filterCheckedLeaf = (finalSelection: any) => {
-      let filterObj: Array<any> = [];
-      let labels: Array<string> = [];
+      // FinalSelection
+      let filterObj: Node[] = [];
+      let labels: string[] = [];
       Object.keys(finalSelection).forEach((key) => {
         if (finalSelection[key].genome_uuid) {
           filterObj.push(finalSelection[key]);
@@ -219,8 +304,10 @@ export default defineComponent({
       labels2.value = obj2.labels;
     };
 
+    // confirmation of selection
+    const displayParameters = ref<boolean>(false);
     const confirmedSelect = () => {
-      console.log("selection confirmed");
+      displayParameters.value = true;
     };
 
     const notConfirmedSelect = () => {
@@ -242,6 +329,9 @@ export default defineComponent({
       submitted,
       confirmedSelect,
       notConfirmedSelect,
+      resetTree1,
+      resetTree2,
+      displayParameters,
     };
   },
 });

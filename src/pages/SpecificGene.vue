@@ -13,7 +13,7 @@
         <p class="py-2 text-2xl">Paste here your own sequence...</p>
         <textarea
           rows="10"
-          cols="80"
+          cols="60"
           class="px-5 py-3 border border-gray-500 bg-gray-100"
           style="font-family: 'Courier New', Courier, monospace"
         ></textarea>
@@ -50,13 +50,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 export default defineComponent({
   setup() {
+    const checked = ref(false);
     const loadFile = () => {
       console.log("load file to area");
     };
-    return { loadFile };
+    const next = () => {
+      console.log("next");
+      checked.value = true;
+    };
+    return { loadFile, next, checked };
   },
 });
 </script>
