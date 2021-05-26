@@ -17,12 +17,18 @@ interface DatabaseTree {
     tree: OldTree
 }
 
+interface OldTree {
+    text: string,
+    children?: OldTree[],
+    genome_uuid?: string,
+}
+
 interface NewTree {
     root: Node[],
 }
 
 interface Node {
-    key: string,
+    key: key,
     label: string,
     genome_uuid?: string,
     children?: Node[],
@@ -31,12 +37,10 @@ interface Node {
     style?: string,
 }
 
-interface OldTree {
-
-}
+type key = string | number;
 
 interface FinalSelection {
-    [key: string]: {
+    (key: key): {
         filterObj: Node[],
         labels: string[],
     }

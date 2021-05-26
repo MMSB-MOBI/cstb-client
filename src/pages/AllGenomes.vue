@@ -35,7 +35,7 @@
 
       <div class="col-span-2 py-2 text-center">
         <button
-          @click="submit"
+          @click="submitSelection"
           class="p-3 text-white font-bold bg-green-500 border rounded border-gray-500"
         >
           Submit selections
@@ -108,6 +108,7 @@
               <option value="17">17</option>
               <option value="18">18</option>
               <option value="19">19</option>
+              <option value="20" selected>20</option>
             </select>
           </div>
 
@@ -117,6 +118,7 @@
             <p>Email</p>
             <input
               type="text"
+              name="email"
               label="email"
               class="w-60 border border-gray-400 rounded"
             />
@@ -128,7 +130,7 @@
 
           <div class="col-span-3 px-5 py-2 text-right">
             <button
-              @click="submit"
+              @click="submitRequest"
               class="p-3 text-white text-2xl font-bold bg-gradient-to-r from-green-700 to-green-400 rounded border border-black"
             >
               Submit >>
@@ -141,7 +143,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, inject } from "vue";
 import TaxonomicTree from "../components/TaxonomicTree.vue";
 import TaxonomyService from "../service/taxonomy";
 import treeWrapper from "./treeWrapper";
@@ -191,7 +193,7 @@ export default defineComponent({
     ) => {
       currentWrapper.selectedKeys = {};
       currentWrapper.expandedKeys = {};
-      otherWrapper.finalSelection = [];
+      currentWrapper.finalSelection = [];
       otherWrapper.finalSelection = [];
       resetBrowse(treeNb);
     };
@@ -292,16 +294,24 @@ export default defineComponent({
     const submitted = ref<boolean>(false);
     const labels1 = ref();
     const labels2 = ref();
-    const submit = () => {
-      submitted.value = true;
+    const submitSelection = () => {
+      const _length1 = Object.keys(treeWrapper1.finalSelection).length;
+      const _length2 = Object.keys(treeWrapper2.finalSelection).length;
 
-      const obj1 = filterCheckedLeaf(treeWrapper1.finalSelection);
-      treeWrapper1.listTree = obj1.filterObj;
-      labels1.value = obj1.labels;
+      if (_length1 !== 0 || _length2 !== 0) {
+        submitted.value = true;
 
-      const obj2 = filterCheckedLeaf(treeWrapper2.finalSelection);
-      treeWrapper2.listTree = obj2.filterObj;
-      labels2.value = obj2.labels;
+        const obj1 = filterCheckedLeaf(treeWrapper1.finalSelection);
+        treeWrapper1.listTree = obj1.filterObj;
+        labels1.value = obj1.labels;
+
+        const obj2 = filterCheckedLeaf(treeWrapper2.finalSelection);
+        treeWrapper2.listTree = obj2.filterObj;
+        labels2.value = obj2.labels;
+
+      } else {
+        alert("You have to choose at least one included genome.");
+      }
     };
 
     // confirmation of selection
@@ -314,12 +324,38 @@ export default defineComponent({
       submitted.value = false;
     };
 
+    // submit request
+    const submitRequest = () => {
+      const input: HTMLInputElement | null = document.querySelector("input");
+      if (input && input.value === "") {
+        alert("You have to provide email adress.");
+        return;
+      } else {
+        console.log("submit request");
+        // socket emit
+      }
+    };
+
+    const socket = inject("socket");
+
+    // example with socket
+    function foo(socket: any) {
+      const bar = ref("");
+      socket.on("foo", (value: any) => {
+        bar.value = value;
+      });
+
+      return {
+        bar,
+      };
+    }
+
     return {
       treeWrapper1,
       treeWrapper2,
       labels1,
       labels2,
-      submit,
+      submitSelection,
       onNodeSelectTree1,
       onNodeUnselectTree1,
       onNodeExpandTree1,
@@ -332,6 +368,8 @@ export default defineComponent({
       resetTree1,
       resetTree2,
       displayParameters,
+      foo,
+      submitRequest,
     };
   },
 });

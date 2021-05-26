@@ -5,7 +5,14 @@ import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 import "./assets/style.css"
 import router from "./router/router"
+import Socketio from './plugins/socket'
 
 const app = createApp(App);
 app.use(router);
+app.use(Socketio, {
+    connection: 'http://localhost:4001',
+    options: {
+        // Your Socket.io options here
+    }
+})
 app.mount('#app');

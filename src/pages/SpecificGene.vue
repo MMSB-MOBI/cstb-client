@@ -23,12 +23,6 @@
         <p class="py-2 text-2xl">or upload a fasta file.</p>
         <div class="flex flex-col space-y-5">
           <input label="Choose file" type="file" />
-          <button
-            @click="loadFile"
-            class="p-3 text-white font-bold bg-green-500 border rounded border-gray-500"
-          >
-            &#60;&#60;&#60; Load file to the area
-          </button>
         </div>
       </div>
 
@@ -51,7 +45,10 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+// import FileUpload from "primevue/fileupload";
+
 export default defineComponent({
+  components: { },
   setup() {
     const checked = ref(false);
     const loadFile = () => {
