@@ -308,7 +308,6 @@ export default defineComponent({
         const obj2 = filterCheckedLeaf(treeWrapper2.finalSelection);
         treeWrapper2.listTree = obj2.filterObj;
         labels2.value = obj2.labels;
-
       } else {
         alert("You have to choose at least one included genome.");
       }
@@ -325,30 +324,19 @@ export default defineComponent({
     };
 
     // submit request
-    const submitRequest = () => {
+
+    const submitRequest = (socket: any) => {
       const input: HTMLInputElement | null = document.querySelector("input");
       if (input && input.value === "") {
         alert("You have to provide email adress.");
         return;
       } else {
         console.log("submit request");
-        // socket emit
+        foo(socket);
       }
     };
 
-    const socket = inject("socket");
-
-    // example with socket
-    function foo(socket: any) {
-      const bar = ref("");
-      socket.on("foo", (value: any) => {
-        bar.value = value;
-      });
-
-      return {
-        bar,
-      };
-    }
+    const socket: any = inject("socket");
 
     return {
       treeWrapper1,
@@ -368,9 +356,23 @@ export default defineComponent({
       resetTree1,
       resetTree2,
       displayParameters,
-      foo,
       submitRequest,
     };
   },
 });
+
+function foo(socket: any) {
+  const message = ref("hello");
+  console.log("here");
+
+  // socket.emit("computeSpecific", { gi: ["E.coli"], gni: ["citronbacter"] });
+  socket.on("connect", function () {
+    console.log("Connected");
+  });
+
+  return {
+    message,
+  };
+}
+
 </script>

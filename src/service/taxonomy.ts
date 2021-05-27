@@ -3,7 +3,7 @@ import formatTree from '../utilities/primevue'
 
 export default class TaxonomyService {
     getTree() {
-        return axios.get('tree')
+        return axios.get('dev/tree')
             .then((res) => {
                 const treeIndex = {};
                 const newTree = formatTree(res.data, "0", treeIndex);
