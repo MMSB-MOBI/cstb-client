@@ -32,7 +32,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-, "src/main.ts", "src/plugins/Socket"  ],
+, "src/main.ts", "src/plugins/Socket", "src/plugins/socket.io.js"  ],
   "exclude": [
     "node_modules"
   ]

@@ -24,7 +24,8 @@ interface OldTree {
 }
 
 interface NewTree {
-    root: Node[],
+    (key: number): Node[],
+    (key: number): Node[]
 }
 
 interface Node {

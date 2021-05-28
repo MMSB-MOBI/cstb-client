@@ -93,8 +93,8 @@
             class="px-6 py-5 mx-8 my-5 bg-gray-100 border rounded border-gray-400"
           >
             <p>PAM motif</p>
-            <select class="w-60 border border-gray-400">
-              <option>NGG</option>
+            <select id="pam_AllG" class="w-60 border border-gray-400">
+              <option selected>NGG</option>
             </select>
           </div>
 
@@ -102,7 +102,7 @@
             class="px-6 py-5 mx-8 my-5 bg-gray-100 border rounded border-gray-400"
           >
             <p>sgRNA length (without PAM motif)</p>
-            <select class="w-60 border border-gray-400">
+            <select id="sgrna-length_AllG" class="w-60 border border-gray-400">
               <option value="15">15</option>
               <option value="16">16</option>
               <option value="17">17</option>
@@ -118,7 +118,7 @@
             <p>Email</p>
             <input
               type="text"
-              name="email"
+              id="email"
               label="email"
               class="w-60 border border-gray-400 rounded"
             />
@@ -147,16 +147,38 @@ import { defineComponent, ref, onMounted, inject } from "vue";
 import TaxonomicTree from "../components/TaxonomicTree.vue";
 import TaxonomyService from "../service/taxonomy";
 import treeWrapper from "./treeWrapper";
-import { SelectedKeys, ExpandedKeys, Node } from "../types/TreeTypes";
+import { SelectedKeys, ExpandedKeys, Node, NewTree } from "../types/TreeTypes";
+import TreeWrapper from "./treeWrapper";
+import { io } from "socket.io-client";
 
 export default defineComponent({
   components: { TaxonomicTree },
+
+  // mounted() {
+  //   const socket:any = inject("socket");
+  //   console.log(socket);
+  //   socket.on("connect", () => {
+  //     console.log("bar");
+  //   });
+  // },
+
   setup() {
+    const socket = io('http://localhost:4000/socket');
+    console.dir(socket);
+    
+    socket.on("connect", () => {
+      console.log("connected");
+    });
+
     const treeWrapper1 = new treeWrapper();
     const treeWrapper2 = new treeWrapper();
     const treeService = new TaxonomyService();
 
     onMounted(() => {
+      // socket.on("connect", function () {
+      //   console.log("Connected");
+      // });
+
       treeService.getTree().then((coll) => {
         treeWrapper1.newTree = coll.newTree.root;
         treeWrapper1.newTreeIndex = coll.treeIndex;
@@ -169,16 +191,19 @@ export default defineComponent({
     });
 
     const resetBrowse = (treeNb: number) => {
-      const tree1: any = treeWrapper1.newTree;
-      const tree2: any = treeWrapper2.newTree;
-      if (treeNb === 1) {
-        if (tree1) {
+      if (
+        treeWrapper1.newTree != undefined &&
+        treeWrapper2.newTree != undefined
+      ) {
+        const tree1: any = treeWrapper1.newTree; // NewTree
+        console.log(treeWrapper1.newTree);
+        const tree2: any = treeWrapper2.newTree; // NewTree
+
+        if (treeNb === 1 && tree1) {
           for (const node in Object.entries(tree1)) {
             browse(tree2[node], true);
           }
-        }
-      } else if (treeNb === 2) {
-        if (tree2) {
+        } else if (treeNb === 2 && tree2) {
           for (const node in Object.entries(tree2)) {
             browse(tree1[node], true);
           }
@@ -187,8 +212,8 @@ export default defineComponent({
     };
 
     const resetTree = (
-      currentWrapper: any,
-      otherWrapper: any,
+      currentWrapper: TreeWrapper,
+      otherWrapper: TreeWrapper,
       treeNb: number
     ) => {
       currentWrapper.selectedKeys = {};
@@ -209,12 +234,14 @@ export default defineComponent({
     };
 
     const selectUnselectNode = (
-      currentWrapper: any, //TreeWrapper
-      otherWrapper: any, //TreeWrapper
+      currentWrapper: any, // TreeWrapper
+      otherWrapper: any, // TreeWrapper
       node: Node,
       selectedKeys: SelectedKeys,
       nodeSelected: boolean
     ) => {
+      console.log(selectedKeys.value);
+
       currentWrapper.selectedKeys = selectedKeys.value;
       node.checked = nodeSelected ? true : false;
       const node2 = currentWrapper.getBrowsableNode(
@@ -294,11 +321,11 @@ export default defineComponent({
     const submitted = ref<boolean>(false);
     const labels1 = ref();
     const labels2 = ref();
+
     const submitSelection = () => {
       const _length1 = Object.keys(treeWrapper1.finalSelection).length;
-      const _length2 = Object.keys(treeWrapper2.finalSelection).length;
 
-      if (_length1 !== 0 || _length2 !== 0) {
+      if (_length1 !== 0) {
         submitted.value = true;
 
         const obj1 = filterCheckedLeaf(treeWrapper1.finalSelection);
@@ -324,19 +351,51 @@ export default defineComponent({
     };
 
     // submit request
+    // const socket:any = inject("socket");
 
-    const submitRequest = (socket: any) => {
-      const input: HTMLInputElement | null = document.querySelector("input");
-      if (input && input.value === "") {
-        alert("You have to provide email adress.");
-        return;
+    const submitRequest = () => {
+      const email = document.querySelector("#email") as HTMLInputElement;
+
+      if (email.value !== "") {
+        const gi: string[] = [];
+        const gni: string[] = [];
+
+        treeWrapper1.listTree.forEach((leave: Node) => {
+          const genome_uuid: any = leave.genome_uuid; // type string à faire vérifier genome uuid
+          gi.push(genome_uuid);
+        });
+
+        treeWrapper2.listTree.forEach((leave: Node) => {
+          const genome_uuid: any = leave.genome_uuid;
+          gni.push(genome_uuid);
+        });
+
+        var _pam, pam;
+        _pam = document.getElementById("pam_AllG") as HTMLSelectElement;
+        pam = _pam.options[_pam.selectedIndex].text;
+
+        var _sgrna_length, sgrna_length;
+        _sgrna_length = document.getElementById(
+          "sgrna-length_AllG"
+        ) as HTMLSelectElement;
+        sgrna_length = _sgrna_length.options[_sgrna_length.selectedIndex].text;
+
+        const inputData = {
+          gi,
+          gni,
+          pam,
+          sgrna_length,
+          email: email.value,
+        };
+
+        // socket.emit("computeSpecific", inputData);
+        // socket.on("computeSpecific", (response: any) => {
+        //   console.log("computeSpecific", response);
+        // });
       } else {
-        console.log("submit request");
-        foo(socket);
+        alert("You have to provide email adress.");
       }
     };
-
-    const socket: any = inject("socket");
 
     return {
       treeWrapper1,
@@ -357,22 +416,17 @@ export default defineComponent({
       resetTree2,
       displayParameters,
       submitRequest,
+      // events:events(socket)
     };
   },
 });
 
-function foo(socket: any) {
-  const message = ref("hello");
-  console.log("here");
-
-  // socket.emit("computeSpecific", { gi: ["E.coli"], gni: ["citronbacter"] });
-  socket.on("connect", function () {
-    console.log("Connected");
-  });
-
-  return {
-    message,
-  };
-}
-
+// function events(socket:any) {
+//     const bar = ref('')
+//     socket.on('events', (value:any) => {
+//       bar.value = value;
+//       console.log(value);
+//     })
+//     return bar
+// }
 </script>
