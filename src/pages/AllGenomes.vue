@@ -146,36 +146,22 @@
 import { defineComponent, ref, onMounted, inject } from "vue";
 import TaxonomicTree from "../components/TaxonomicTree.vue";
 import TaxonomyService from "../service/taxonomy";
-import treeWrapper from "./treeWrapper";
 import { SelectedKeys, ExpandedKeys, Node, NewTree } from "../types/TreeTypes";
 import TreeWrapper from "./treeWrapper";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
+
 
 export default defineComponent({
   components: { TaxonomicTree },
 
-  // mounted() {
-  //   const socket:any = inject("socket");
-  //   console.log(socket);
-  //   socket.on("connect", () => {
-  //     console.log("bar");
-  //   });
-  // },
-
   setup() {
-    const socket = io('http://localhost:4000/socket');
-    console.dir(socket);
-    
-    socket.on("connect", () => {
-      console.log("connected");
-    });
-
-    const treeWrapper1 = new treeWrapper();
-    const treeWrapper2 = new treeWrapper();
+    const treeWrapper1 = new TreeWrapper();
+    const treeWrapper2 = new TreeWrapper();
     const treeService = new TaxonomyService();
 
     onMounted(() => {
-      // socket.on("connect", function () {
+      
+      //socket.on("connect", function () {
       //   console.log("Connected");
       // });
 
@@ -196,7 +182,6 @@ export default defineComponent({
         treeWrapper2.newTree != undefined
       ) {
         const tree1: any = treeWrapper1.newTree; // NewTree
-        console.log(treeWrapper1.newTree);
         const tree2: any = treeWrapper2.newTree; // NewTree
 
         if (treeNb === 1 && tree1) {
@@ -240,8 +225,6 @@ export default defineComponent({
       selectedKeys: SelectedKeys,
       nodeSelected: boolean
     ) => {
-      console.log(selectedKeys.value);
-
       currentWrapper.selectedKeys = selectedKeys.value;
       node.checked = nodeSelected ? true : false;
       const node2 = currentWrapper.getBrowsableNode(
@@ -254,7 +237,6 @@ export default defineComponent({
       } else if (node2 && !nodeSelected) {
         const _leaf: Node[] = [];
         selectLeaf(node, _leaf);
-        // update the final selection
         currentWrapper.finalSelection = currentWrapper.finalSelection.filter(
           (node: Node) => !_leaf.includes(node)
         );
@@ -311,7 +293,7 @@ export default defineComponent({
           filterObj.push(finalSelection[key]);
         }
       });
-      Object.keys(filterObj).forEach((key: any) => {
+      Object.keys(filterObj).forEach((key: any ) => {
         labels.push(filterObj[key].label);
       });
       return { filterObj, labels };
@@ -352,7 +334,6 @@ export default defineComponent({
 
     // submit request
     // const socket:any = inject("socket");
-
     const submitRequest = () => {
       const email = document.querySelector("#email") as HTMLInputElement;
 
@@ -361,12 +342,12 @@ export default defineComponent({
         const gni: string[] = [];
 
         treeWrapper1.listTree.forEach((leave: Node) => {
-          const genome_uuid: any = leave.genome_uuid; // type string à faire vérifier genome uuid
+          const genome_uuid: any = leave.genome_uuid; // string
           gi.push(genome_uuid);
         });
 
         treeWrapper2.listTree.forEach((leave: Node) => {
-          const genome_uuid: any = leave.genome_uuid;
+          const genome_uuid: any = leave.genome_uuid; // string
           gni.push(genome_uuid);
         });
 
@@ -385,13 +366,11 @@ export default defineComponent({
           gni,
           pam,
           sgrna_length,
-          email: email.value,
+          email: email.value
         };
 
-        // socket.emit("computeSpecific", inputData);
-        // socket.on("computeSpecific", (response: any) => {
-        //   console.log("computeSpecific", response);
-        // });
+        console.log(inputData);        
+
       } else {
         alert("You have to provide email adress.");
       }
@@ -416,17 +395,7 @@ export default defineComponent({
       resetTree2,
       displayParameters,
       submitRequest,
-      // events:events(socket)
     };
   },
 });
-
-// function events(socket:any) {
-//     const bar = ref('')
-//     socket.on('events', (value:any) => {
-//       bar.value = value;
-//       console.log(value);
-//     })
-//     return bar
-// }
 </script>

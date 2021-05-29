@@ -1,28 +1,12 @@
-import { io } from 'socket.io-client'
+import io from 'socket.io-client' // Socket.io-client v2 is package scoped
 
 export default {
   install: (app: any, { connection, options }: any) => {
-    // const socket = io(connection, options)
-    const socket = io('http://localhost:4000')
-    console.log("toto", socket);
-    console.log(options);
-
-    socket.on('connect', function () {
-      console.log('Connected');
-    })
-
-    setTimeout(() => {
-      console.log("blabla");
-      console.dir(socket);
-
-      socket.emit('identity', 200)
-    }, 2000)
-
-    socket.on("connect_error", () => {
-      console.log("connect error");
-      socket.connect();
+    console.log("=>", connection, options);
+    const socket = io(connection, options);
+    socket.on("connect_error", (error:any) => {
+      console.log("Connection error", error);
     });
-
     app.config.globalProperties.$socket = socket
     app.provide('socket', socket)
   }

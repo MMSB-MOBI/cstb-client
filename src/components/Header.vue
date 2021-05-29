@@ -37,6 +37,7 @@ export default defineComponent({
   data() {
     return {
       list: [
+         { title: "SOCKET", to: "/socket" },
         { title: "ALL GENOMES", to: "/all-genomes" },
         { title: "SPECIFIC GENE", to: "/specific-gene" },
       ],

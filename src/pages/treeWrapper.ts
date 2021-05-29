@@ -7,7 +7,7 @@ export default class TreeWrapper {
     private _finalSelection: Ref<Node[] | undefined[]> = ref([]);
     private _selectedKeys: Ref<SelectedKeys | undefined> = ref();
     private _expandedKeys: Ref<ExpandedKeys | undefined> = ref();
-    private _listTree: Ref<any> = ref();
+    private _listTree: Ref<Node[] | undefined> = ref();
 
     public set newTree(_: NewTree | undefined) {
         this._newTree.value = _;
