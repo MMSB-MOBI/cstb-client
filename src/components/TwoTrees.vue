@@ -404,15 +404,13 @@ export default defineComponent({
           gni.push(genome_uuid);
         });
 
-        var _pam, pam;
-        _pam = document.getElementById("pam_AllG") as HTMLSelectElement;
-        pam = _pam.options[_pam.selectedIndex].text;
+        const _pam = document.getElementById("pam_AllG") as HTMLSelectElement;
+        const pam = _pam.options[_pam.selectedIndex].text;
 
-        var _sgrna_length, sgrna_length;
-        _sgrna_length = document.getElementById(
+        const _sgrna_length = document.getElementById(
           "sgrna-length_AllG"
         ) as HTMLSelectElement;
-        sgrna_length = _sgrna_length.options[_sgrna_length.selectedIndex].text;
+        const sgrna_length = _sgrna_length.options[_sgrna_length.selectedIndex].text;
 
         if (props.category === "allGenomes") {
           inputData.value = {

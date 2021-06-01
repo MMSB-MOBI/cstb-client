@@ -24,7 +24,16 @@
       <div class="px-7">
         <p class="py-2 text-2xl">or upload a fasta file.</p>
         <div class="flex flex-col space-y-5">
-          <input id="file" type="file" @change="loadFile" />
+          <FileUpload
+            accept=".fna"
+            :maxFileSize="1000000"
+            :fileLimit="1"
+            :customUpload="true"
+            @uploader="onUpload"
+            @select="onSelect"
+            @remove="onRemove"
+            @clear="onRemove"
+          />
         </div>
       </div>
 
@@ -45,7 +54,7 @@
           {{ seq }}
         </p>
       </div>
-      <TwoTrees category="specificGene" :sequence="seq"/>
+      <TwoTrees category="specificGene" :sequence="seq" />
     </div>
   </div>
 </template>
@@ -53,20 +62,17 @@
 <script lang="ts">
 import { defineComponent, ref, Ref } from "vue";
 import TwoTrees from "../components/TwoTrees.vue";
+import FileUpload from "primevue/fileupload";
 
 export default defineComponent({
-  components: { TwoTrees },
+  components: { TwoTrees, FileUpload },
   setup() {
     const checked = ref(false);
     const seqFromFile = ref();
 
-    const loadFile = () => {
-      const _selectedFile = document.getElementById("file") as HTMLInputElement;
-      if (_selectedFile.files) {
-        seqFromFile.value = (document.getElementById(
-          "sequence"
-        ) as HTMLInputElement).value;
-        const file = _selectedFile.files[0];
+    const onUpload = (event: any) => {
+      if (event.files) {
+        const file = event.files[0];
         const reader: FileReader = new FileReader();
         reader.onload = function () {
           const text = reader.result;
@@ -74,7 +80,26 @@ export default defineComponent({
         };
         reader.readAsText(file);
       } else {
-        console.log("pas de fichier selectionné");
+        alert("Pas de fichier selectionné");
+      }
+    };
+
+    const onSelect = () => {
+      console.log("on select");
+      var chooseButton: HTMLElement | null = document.querySelector(
+        "span.p-fileupload-choose"
+      );
+      if (chooseButton) {
+        chooseButton.setAttribute("style", "fill-opacity: .25;");
+      }
+    };
+
+    const onRemove = (event: any) => {
+      seqFromFile.value = "";
+      var button = document.querySelector("span.p-fileupload-choose input");
+      if (button) {
+        button.removeAttribute("disabled");
+        // event.files[0]
       }
     };
 
@@ -100,12 +125,20 @@ export default defineComponent({
     };
 
     return {
-      loadFile,
+      onUpload,
       next,
       checked,
       seq,
       seqFromFile,
+      onRemove,
+      onSelect,
     };
   },
 });
 </script>
+
+<style>
+.choose {
+  fill-opacity: 0.25;
+}
+</style>
