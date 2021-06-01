@@ -17,7 +17,7 @@
           cols="60"
           class="px-5 py-3 border border-gray-500 bg-gray-100"
           style="font-family: 'Courier New', Courier, monospace"
-          v-model="sequence"
+          v-model="seqFromFile"
         />
       </div>
 
@@ -45,7 +45,7 @@
           {{ seq }}
         </p>
       </div>
-      <TwoTrees category="specificGene" />
+      <TwoTrees category="specificGene" :sequence="seq"/>
     </div>
   </div>
 </template>
@@ -58,19 +58,19 @@ export default defineComponent({
   components: { TwoTrees },
   setup() {
     const checked = ref(false);
-    const sequence = ref();
+    const seqFromFile = ref();
 
     const loadFile = () => {
       const _selectedFile = document.getElementById("file") as HTMLInputElement;
       if (_selectedFile.files) {
-        sequence.value = (document.getElementById(
+        seqFromFile.value = (document.getElementById(
           "sequence"
         ) as HTMLInputElement).value;
         const file = _selectedFile.files[0];
         const reader: FileReader = new FileReader();
         reader.onload = function () {
           const text = reader.result;
-          sequence.value = text;
+          seqFromFile.value = text;
         };
         reader.readAsText(file);
       } else {
@@ -104,7 +104,7 @@ export default defineComponent({
       next,
       checked,
       seq,
-      sequence,
+      seqFromFile,
     };
   },
 });

@@ -207,7 +207,7 @@ import TreeWrapper from "../service/treeWrapper";
 import { SelectedKeys, ExpandedKeys, Node, NewTree } from "../types/TreeTypes";
 
 export default defineComponent({
-  props: ["category"],
+  props: ["category", "sequence"],
   components: { TaxonomicTree },
   setup(props) {
     onMounted(() => {
@@ -384,17 +384,13 @@ export default defineComponent({
 
     // submit request
     const socket: any = inject("socket");
-    const email = ref();
     const inputData = ref();
 
     const submitRequest = () => {
-      console.log("HERE");
+      const email = (document.querySelector("#email") as HTMLInputElement)
+        .value;
 
-      email.value = (document.querySelector(
-        "#email"
-      ) as HTMLInputElement).value;
-
-      if (email.value !== "") {
+      if (email !== "") {
         const gi: string[] = [];
         const gni: string[] = [];
 
@@ -419,32 +415,38 @@ export default defineComponent({
         sgrna_length = _sgrna_length.options[_sgrna_length.selectedIndex].text;
 
         if (props.category === "allGenomes") {
-          console.log("all genomes data");
-          
           inputData.value = {
             gi,
             gni,
             pam,
             sgrna_length,
-            email: email.value,
+            email: email,
           };
+
+          socket.emit("allGenomesRequest", inputData.value, (response: any) =>
+            console.log("Results:", response)
+          );
         } else if (props.category === "specificGene") {
-          console.log("specific gene data");
-          
+          const pid = (document.getElementById(
+            "percent_identity"
+          ) as HTMLInputElement).value;
+
+          const seq = props.sequence;
+
           inputData.value = {
             gi,
             gni,
             pam,
             sgrna_length,
-            email: email.value,
+            email,
+            pid,
+            seq,
           };
+
+          socket.emit("specificGeneRequest", inputData.value, (response: any) =>
+            console.log("Results:", response)
+          );
         }
-
-        console.log(inputData.value);
-
-        socket.emit("submittedRequest", inputData.value, (response: any) =>
-          console.log("Results:", response)
-        );
       } else {
         alert("You have to provide email adress.");
       }
