@@ -209,7 +209,7 @@ import { SelectedKeys, ExpandedKeys, Node, NewTree } from "../types/TreeTypes";
 export default defineComponent({
   props: ["category"],
   components: { TaxonomicTree },
-  setup() {
+  setup(props) {
     onMounted(() => {
       treeService.getTree().then((coll) => {
         treeWrapper1.newTree = coll.newTree.root;
@@ -384,11 +384,15 @@ export default defineComponent({
 
     // submit request
     const socket: any = inject("socket");
+    const email = ref();
+    const inputData = ref();
 
     const submitRequest = () => {
       console.log("HERE");
 
-      const email = document.querySelector("#email") as HTMLInputElement;
+      email.value = (document.querySelector(
+        "#email"
+      ) as HTMLInputElement).value;
 
       if (email.value !== "") {
         const gi: string[] = [];
@@ -414,16 +418,31 @@ export default defineComponent({
         ) as HTMLSelectElement;
         sgrna_length = _sgrna_length.options[_sgrna_length.selectedIndex].text;
 
-        const inputData = {
-          gi,
-          gni,
-          pam,
-          sgrna_length,
-          email: email.value,
-        };
+        if (props.category === "allGenomes") {
+          console.log("all genomes data");
+          
+          inputData.value = {
+            gi,
+            gni,
+            pam,
+            sgrna_length,
+            email: email.value,
+          };
+        } else if (props.category === "specificGene") {
+          console.log("specific gene data");
+          
+          inputData.value = {
+            gi,
+            gni,
+            pam,
+            sgrna_length,
+            email: email.value,
+          };
+        }
 
-        console.log("before submission");
-        socket.emit("submittedRequest", inputData, (response: any) =>
+        console.log(inputData.value);
+
+        socket.emit("submittedRequest", inputData.value, (response: any) =>
           console.log("Results:", response)
         );
       } else {
