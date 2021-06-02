@@ -54,7 +54,11 @@
           {{ seq }}
         </p>
       </div>
-      <TwoTrees category="specificGene" :sequence="seq" />
+      <TwoTrees
+        category="specificGene"
+        :sequence="seq"
+        @display-results="resultsPage"
+      />
     </div>
   </div>
 </template>
@@ -63,6 +67,7 @@
 import { defineComponent, ref, Ref } from "vue";
 import TwoTrees from "../components/TwoTrees.vue";
 import FileUpload from "primevue/fileupload";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   components: { TwoTrees, FileUpload },
@@ -85,7 +90,6 @@ export default defineComponent({
     };
 
     const onSelect = () => {
-      console.log("on select");
       var chooseButton: HTMLElement | null = document.querySelector(
         "span.p-fileupload-choose"
       );
@@ -110,7 +114,6 @@ export default defineComponent({
         "sequence"
       ) as HTMLInputElement).value;
 
-      console.log(seq.value, typeof seq.value);
       const fasta = /^[acgtACGT\s]+$/;
 
       if (seq.value !== "") {
@@ -124,6 +127,12 @@ export default defineComponent({
       }
     };
 
+    const router = useRouter();
+
+    const resultsPage = () => {
+      router.replace("/results");
+    };
+
     return {
       onUpload,
       next,
@@ -132,6 +141,7 @@ export default defineComponent({
       seqFromFile,
       onRemove,
       onSelect,
+      resultsPage,
     };
   },
 });

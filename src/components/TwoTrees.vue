@@ -209,7 +209,7 @@ import { SelectedKeys, ExpandedKeys, Node, NewTree } from "../types/TreeTypes";
 export default defineComponent({
   props: ["category", "sequence"],
   components: { TaxonomicTree },
-  setup(props) {
+  setup(props, { emit }) {
     onMounted(() => {
       treeService.getTree().then((coll) => {
         treeWrapper1.newTree = coll.newTree.root;
@@ -410,7 +410,8 @@ export default defineComponent({
         const _sgrna_length = document.getElementById(
           "sgrna-length_AllG"
         ) as HTMLSelectElement;
-        const sgrna_length = _sgrna_length.options[_sgrna_length.selectedIndex].text;
+        const sgrna_length =
+          _sgrna_length.options[_sgrna_length.selectedIndex].text;
 
         if (props.category === "allGenomes") {
           inputData.value = {
@@ -421,9 +422,12 @@ export default defineComponent({
             email: email,
           };
 
-          socket.emit("allGenomesRequest", inputData.value, (response: any) =>
-            console.log("Results:", response)
-          );
+          socket.emit("allGenomesRequest", inputData.value);
+          // socket.on("allGenomesResults", (data: any) => {
+          //   console.log("Two tree");
+          // });
+
+          _displayResults();
         } else if (props.category === "specificGene") {
           const pid = (document.getElementById(
             "percent_identity"
@@ -441,13 +445,18 @@ export default defineComponent({
             seq,
           };
 
-          socket.emit("specificGeneRequest", inputData.value, (response: any) =>
-            console.log("Results:", response)
-          );
+          socket.emit("specificGeneRequest", inputData.value);
+          
+
+          _displayResults();
         }
       } else {
         alert("You have to provide email adress.");
       }
+    };
+
+    const _displayResults = () => {
+      emit("display-results");
     };
 
     return {
