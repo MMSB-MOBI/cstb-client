@@ -1,22 +1,27 @@
 <template>
-  <div>
-    <result-page
-      v-if="dataLoad"
-      :all_data="data.data_card"
-      :org_names="data.gi"
-      :complete_data="JSON.stringify(data.data)"
-      :fasta_metadata="JSON.stringify(data.fasta_metadata)"
-      :job_tag="data.tag"
-      :total_hits="data.number_hits"
-      :excluded_names="data.not_in"
-    ></result-page>
+  <result-page
+    v-if="dataLoad"
+    :all_data="data.data_card"
+    :org_names="data.gi"
+    :complete_data="JSON.stringify(data.data)"
+    :fasta_metadata="JSON.stringify(data.fasta_metadata)"
+    :job_tag="data.tag"
+    :total_hits="data.number_hits"
+    :excluded_names="data.not_in"
+    :gene="data.gene"
+  />
+  <div v-else class="grid place-content-center">
+    <SyncLoader class="m-20"/>
+    <!-- <p>Processing your request</p> -->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, inject, ref } from "vue";
+import SyncLoader from "vue-spinner/src/SyncLoader.vue";
 
 export default defineComponent({
+  components: { SyncLoader },
   setup() {
     const data = ref();
     const dataLoad = ref(false);
