@@ -29,7 +29,15 @@
     <div class="col-span-2 py-2 text-center">
       <button
         @click="submitSelection"
-        class="p-3 text-white font-bold bg-green-500 border rounded border-gray-500"
+        class="
+          p-3
+          text-white
+          font-bold
+          bg-green-500
+          border
+          rounded
+          border-gray-500
+        "
       >
         Submit selections
       </button>
@@ -67,13 +75,33 @@
       <p class="py-2 font-bold">Confirm your selection ?</p>
       <button
         @click="confirmedSelect"
-        class="mx-2 py-3 px-4 text-white font-bold bg-green-500 border rounded border-gray-500"
+        class="
+          mx-2
+          py-3
+          px-4
+          text-white
+          font-bold
+          bg-green-500
+          border
+          rounded
+          border-gray-500
+        "
       >
         Yes
       </button>
       <button
         @click="notConfirmedSelect"
-        class="mx-2 py-3 px-4 text-white font-bold bg-red-500 border rounded border-gray-500"
+        class="
+          mx-2
+          py-3
+          px-4
+          text-white
+          font-bold
+          bg-red-500
+          border
+          rounded
+          border-gray-500
+        "
       >
         No
       </button>
@@ -124,7 +152,16 @@
         <div class="col-span-3 px-5 py-2 text-right">
           <button
             @click="submitRequest"
-            class="p-3 text-white text-2xl font-bold bg-gradient-to-r from-green-700 to-green-400 rounded border border-black"
+            class="
+              p-3
+              text-white text-2xl
+              font-bold
+              bg-gradient-to-r
+              from-green-700
+              to-green-400
+              rounded
+              border border-black
+            "
           >
             Submit >>
           </button>
@@ -189,7 +226,16 @@
         <div class="col-span-4 px-5 py-2 text-right">
           <button
             @click="submitRequest"
-            class="p-3 text-white text-2xl font-bold bg-gradient-to-r from-green-700 to-green-400 rounded border border-black"
+            class="
+              p-3
+              text-white text-2xl
+              font-bold
+              bg-gradient-to-r
+              from-green-700
+              to-green-400
+              rounded
+              border border-black
+            "
           >
             Submit >>
           </button>
@@ -235,12 +281,12 @@ export default defineComponent({
         const tree2: any = treeWrapper2.newTree; // NewTree
 
         if (treeNb === 1 && tree1) {
-          for (const node in Object.entries(tree1)) {
-            browse(tree2[node], true);
+          for (const key in Object.entries(tree1)) {
+            browse(tree2[key], true);
           }
         } else if (treeNb === 2 && tree2) {
-          for (const node in Object.entries(tree2)) {
-            browse(tree1[node], true);
+          for (const key in Object.entries(tree2)) {
+            browse(tree1[key], true);
           }
         }
       }
@@ -423,18 +469,12 @@ export default defineComponent({
           };
 
           socket.emit("allGenomesRequest", inputData.value);
-          // socket.on("allGenomesResults", (data: any) => {
-          //   console.log("Two tree");
-          // });
-
           _displayResults();
         } else if (props.category === "specificGene") {
-          const pid = (document.getElementById(
-            "percent_identity"
-          ) as HTMLInputElement).value;
-
+          const pid = (
+            document.getElementById("percent_identity") as HTMLInputElement
+          ).value;
           const seq = props.sequence;
-
           inputData.value = {
             gi,
             gni,
@@ -444,10 +484,7 @@ export default defineComponent({
             pid,
             seq,
           };
-
           socket.emit("specificGeneRequest", inputData.value);
-          
-
           _displayResults();
         }
       } else {
