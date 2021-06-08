@@ -250,7 +250,11 @@ import { defineComponent, onMounted, ref, inject } from "vue";
 import TaxonomicTree from "../components/TaxonomicTree.vue";
 import TaxonomyService from "../service/taxonomy";
 import TreeWrapper from "../service/treeWrapper";
-import { SelectedKeys, ExpandedKeys, Node, NewTree } from "../types/TreeTypes";
+import { SelectedKeys, ExpandedKeys, Node } from "../types/TreeTypes";
+
+import TaxonomyServiceTest from "../service/taxonomy"
+const testTreeService = new TaxonomyServiceTest();
+testTreeService.getTreeTest()
 
 export default defineComponent({
   props: ["category", "sequence"],

@@ -17,9 +17,6 @@ app.config.isCustomElement = tag => tag === 'result-page';
 app.use(PrimeVue);
 app.use(router);
 app.use(Socketio, {
-    connection: 'localhost:4000',
-    /*     options: {
-    //         Socket.io options here
-    //     }*/
+    connection: 'localhost:4000'
 })
 app.mount('#app');
