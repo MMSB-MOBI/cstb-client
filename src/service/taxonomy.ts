@@ -12,14 +12,12 @@ export default class TaxonomyService {
             })
     }
 
-    // tests
     getTreeTest() {
         return axios.get('dev/tree')
             .then((res) => {
-                console.log("get tree test");
                 const treeIndex = {};
-                const newTreeTest = formatTreeTest(res.data, "0", treeIndex);
-                console.log(newTreeTest);
+                const newTree = formatTreeTest(res.data, treeIndex);
+                return { newTree, treeIndex }
             })
     }
 }

@@ -252,9 +252,7 @@ import TaxonomyService from "../service/taxonomy";
 import TreeWrapper from "../service/treeWrapper";
 import { SelectedKeys, ExpandedKeys, Node } from "../types/TreeTypes";
 
-import TaxonomyServiceTest from "../service/taxonomy"
-const testTreeService = new TaxonomyServiceTest();
-testTreeService.getTreeTest()
+import TaxonomyServiceTest from "../service/taxonomy";
 
 export default defineComponent({
   props: ["category", "sequence"],
@@ -271,6 +269,11 @@ export default defineComponent({
         treeWrapper2.newTreeIndex = coll.treeIndex;
       });
     });
+
+    // test
+    const testTreeService = new TaxonomyServiceTest();
+    testTreeService.getTreeTest();
+    // test
 
     const treeWrapper1 = new TreeWrapper();
     const treeWrapper2 = new TreeWrapper();

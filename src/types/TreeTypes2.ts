@@ -31,7 +31,7 @@ interface NewTree {
     _rev: string,
     date: string,
     tree: {
-        root: NewNode
+        root: NewNode[]
     },
 }
 
