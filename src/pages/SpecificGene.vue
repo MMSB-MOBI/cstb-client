@@ -50,7 +50,7 @@
     <div v-else>
       <div class="col-span-2 px-4 py-2 mx-5 border border-gray-400 bg-gray-100">
         <p class="font-bold">Your query is :</p>
-        <p class="overflow-auto h-10" style="word-wrap: break-word">
+        <p class="overflow-auto h-20" style="word-wrap: break-word">
           {{ seq }}
         </p>
       </div>
@@ -114,7 +114,7 @@ export default defineComponent({
         "sequence"
       ) as HTMLInputElement).value;
 
-      const fasta = /^[acgtACGT\s]+$/;
+      const fasta = /(^>[^]+)|(^[acgtACGT\s]+)$/;
 
       if (seq.value !== "") {
         if (fasta.test(seq.value)) {
