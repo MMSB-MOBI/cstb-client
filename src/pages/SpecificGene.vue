@@ -40,7 +40,16 @@
       <div class="col-span-2 py-7 text-center">
         <button
           @click="next"
-          class="py-3 px-7 text-white font-bold bg-green-500 border rounded border-gray-500"
+          class="
+            py-3
+            px-7
+            text-white
+            font-bold
+            bg-green-500
+            border
+            rounded
+            border-gray-500
+          "
         >
           Next >>
         </button>
@@ -108,16 +117,42 @@ export default defineComponent({
     };
 
     const seq: Ref<string | undefined> = ref();
+    // const format = (fasta: string) => {
+    //   // display of fasta query in blocks header + 70nt
+    //   var newFasta = "";
+    //   if (fasta[0] === ">") {
+    //     var header = "";
+    //     var seq = "";
+    //     var head = true;
+    //     for (let i = 0; i < fasta.length; i++) {
+    //       if (head) {
+    //         header += fasta[i];
+    //       } else {
+    //         if (i > 0 && i % 70 === 0) {
+    //           seq += " " + fasta[i];
+    //         } else {
+    //           seq += fasta[i];
+    //         }
+    //       }
+    //       if (fasta[i] === "\n") {
+    //         head = false;
+    //       }
+    //     }
+    //     newFasta = header + "\n" + seq;
+    //   }
+    //   return newFasta;
+    // };
 
     const next = () => {
-      seq.value = (document.getElementById(
-        "sequence"
-      ) as HTMLInputElement).value;
+      seq.value = (
+        document.getElementById("sequence") as HTMLInputElement
+      ).value;
 
-      const fasta = /(^>[^]+)|(^[acgtACGT\s]+)$/;
+      const fasta = /(^>[^]+\n[acgtACGT\s]+$)|(^[acgtACGT\s]+$)/;
 
       if (seq.value !== "") {
         if (fasta.test(seq.value)) {
+          // seq.value = format(seq.value);
           checked.value = true;
         } else {
           alert("Sequence not in fasta format");

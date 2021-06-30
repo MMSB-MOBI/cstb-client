@@ -1,13 +1,13 @@
 import { ref, Ref } from 'vue'
-import { ExpandedKeys, NewTree, Node, SelectedKeys } from '../types/TreeTypes'
+import { ExpandedKeys, NewTree, NewNode, SelectedKeys } from '../types/TreeTypes'
 
 export default class TreeWrapper {
     private _newTree: Ref<NewTree | undefined> = ref();
-    private _newTreeIndex: Ref<{ [key: string]: Node } | undefined> = ref();
-    private _finalSelection: Ref<Node[] | undefined[]> = ref([]);
+    private _newTreeIndex: Ref<{ [key: string]: NewNode } | undefined> = ref();
+    private _finalSelection: Ref<NewNode[] | undefined[]> = ref([]);
     private _selectedKeys: Ref<SelectedKeys | undefined> = ref();
     private _expandedKeys: Ref<ExpandedKeys | undefined> = ref();
-    private _listTree: Ref<Node[] | undefined> = ref();
+    private _listTree: Ref<NewNode[] | undefined> = ref();
 
     public set newTree(_: NewTree | undefined) {
         this._newTree.value = _;
@@ -15,16 +15,16 @@ export default class TreeWrapper {
     public get newTree(): NewTree | undefined {
         return this._newTree.value
     }
-    public set newTreeIndex(_: { [key: string]: Node } | undefined) {
+    public set newTreeIndex(_: { [key: string]: NewNode } | undefined) {
         this._newTreeIndex.value = _;
     }
-    public get newTreeIndex(): { [key: string]: Node } | undefined {
+    public get newTreeIndex(): { [key: string]: NewNode } | undefined {
         return this._newTreeIndex.value
     }
-    public set finalSelection(_: Node[] | undefined[]) {
+    public set finalSelection(_: NewNode[] | undefined[]) {
         this._finalSelection.value = _;
     }
-    public get finalSelection(): Node[] | undefined[] {
+    public get finalSelection(): NewNode[] | undefined[] {
         return this._finalSelection.value
     }
     public set selectedKeys(_: SelectedKeys | undefined) {
@@ -46,7 +46,7 @@ export default class TreeWrapper {
         return this._listTree.value
     }
 
-    getBrowsableNode(node: Node, otherTreeIndex: { [key: string]: Node } | undefined) {
+    getBrowsableNode(node: NewNode, otherTreeIndex: { [key: string]: NewNode } | undefined) {
         if (otherTreeIndex) {
             const node2 = otherTreeIndex[node.key];
             return node2

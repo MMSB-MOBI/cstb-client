@@ -250,9 +250,7 @@ import { defineComponent, onMounted, ref, inject } from "vue";
 import TaxonomicTree from "../components/TaxonomicTree.vue";
 import TaxonomyService from "../service/taxonomy";
 import TreeWrapper from "../service/treeWrapper";
-import { SelectedKeys, ExpandedKeys, Node } from "../types/TreeTypes";
-
-import TaxonomyServiceTest from "../service/taxonomy";
+import { SelectedKeys, ExpandedKeys, NewNode } from "../types/TreeTypes";
 
 export default defineComponent({
   props: ["category", "sequence"],
@@ -269,11 +267,6 @@ export default defineComponent({
         treeWrapper2.newTreeIndex = coll.treeIndex;
       });
     });
-
-    // test
-    const testTreeService = new TaxonomyServiceTest();
-    testTreeService.getTreeTest();
-    // test
 
     const treeWrapper1 = new TreeWrapper();
     const treeWrapper2 = new TreeWrapper();
@@ -311,9 +304,9 @@ export default defineComponent({
       resetBrowse(treeNb);
     };
 
-    const selectLeaf = (node: Node, leaf: Node[]) => {
+    const selectLeaf = (node: NewNode, leaf: NewNode[]) => {
       if (node.children) {
-        node.children.forEach((child: Node) => {
+        node.children.forEach((child: NewNode) => {
           selectLeaf(child, leaf);
         });
       } else {
@@ -324,7 +317,7 @@ export default defineComponent({
     const selectUnselectNode = (
       currentWrapper: any, // TreeWrapper
       otherWrapper: any, // TreeWrapper
-      node: Node,
+      node: NewNode,
       selectedKeys: SelectedKeys,
       nodeSelected: boolean
     ) => {
@@ -338,20 +331,20 @@ export default defineComponent({
         selectLeaf(node, currentWrapper.finalSelection);
         browse(node2, false);
       } else if (node2 && !nodeSelected) {
-        const _leaf: Node[] = [];
+        const _leaf: NewNode[] = [];
         selectLeaf(node, _leaf);
         currentWrapper.finalSelection = currentWrapper.finalSelection.filter(
-          (node: Node) => !_leaf.includes(node)
+          (node: NewNode) => !_leaf.includes(node)
         );
         browse(node2, true);
       }
     };
 
     // about tree 1
-    const onNodeSelectTree1 = (node: Node, selectedKeys: SelectedKeys) => {
+    const onNodeSelectTree1 = (node: NewNode, selectedKeys: SelectedKeys) => {
       selectUnselectNode(treeWrapper1, treeWrapper2, node, selectedKeys, true);
     };
-    const onNodeUnselectTree1 = (node: Node, selectedKeys: SelectedKeys) => {
+    const onNodeUnselectTree1 = (node: NewNode, selectedKeys: SelectedKeys) => {
       selectUnselectNode(treeWrapper1, treeWrapper2, node, selectedKeys, false);
     };
     const onNodeExpandTree1 = (expandedKeys: ExpandedKeys) => {
@@ -362,10 +355,10 @@ export default defineComponent({
     };
 
     // about tree 2
-    const onNodeSelectTree2 = (node: Node, selectedKeys: SelectedKeys) => {
+    const onNodeSelectTree2 = (node: NewNode, selectedKeys: SelectedKeys) => {
       selectUnselectNode(treeWrapper2, treeWrapper1, node, selectedKeys, true);
     };
-    const onNodeUnselectTree2 = (node: Node, selectedKeys: SelectedKeys) => {
+    const onNodeUnselectTree2 = (node: NewNode, selectedKeys: SelectedKeys) => {
       selectUnselectNode(treeWrapper2, treeWrapper1, node, selectedKeys, false);
     };
     const onNodeExpandTree2 = (expandedKeys: ExpandedKeys) => {
@@ -376,20 +369,20 @@ export default defineComponent({
     };
 
     // enable or disable the selection of leaves in a tree
-    const browse = (node: Node, activate: boolean) => {
+    const browse = (node: NewNode, activate: boolean) => {
       if (!node.checked) {
         node.selectable = activate ? true : false;
         node.style = activate ? "color:#495057" : "color:#cccccc";
       }
       if (node.children) {
-        node.children.forEach((child: Node) => browse(child, activate));
+        node.children.forEach((child: NewNode) => browse(child, activate));
       }
     };
 
     // returns the final selection
     const filterCheckedLeaf = (finalSelection: any) => {
       // FinalSelection
-      let filterObj: Node[] = [];
+      let filterObj: NewNode[] = [];
       let labels: string[] = [];
       Object.keys(finalSelection).forEach((key) => {
         if (finalSelection[key].genome_uuid) {
@@ -447,12 +440,12 @@ export default defineComponent({
         const gi: string[] = [];
         const gni: string[] = [];
 
-        treeWrapper1.listTree.forEach((leave: Node) => {
+        treeWrapper1.listTree.forEach((leave: NewNode) => {
           const genome_uuid: any = leave.genome_uuid; // string
           gi.push(genome_uuid);
         });
 
-        treeWrapper2.listTree.forEach((leave: Node) => {
+        treeWrapper2.listTree.forEach((leave: NewNode) => {
           const genome_uuid: any = leave.genome_uuid; // string
           gni.push(genome_uuid);
         });

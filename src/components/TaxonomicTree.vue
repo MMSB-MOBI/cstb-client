@@ -47,7 +47,7 @@
 import { defineComponent, ref, Ref, computed } from "vue";
 import Tree from "primevue/tree";
 // import Button from "primevue/button";
-import { SelectedKeys, Node } from "../types/TreeTypes";
+import { SelectedKeys } from "../types/TreeTypes";
 
 export default defineComponent({
   props: ["tree", "updatedSelectedKeys", "updatedExpandedKeys"],

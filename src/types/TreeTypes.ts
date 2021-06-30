@@ -10,29 +10,37 @@ interface ExpandedKeys {
     partialChecked?: boolean
 }
 
-interface DatabaseTree {
+// old version of tree to convert, from database
+interface OldTree {
     _id: string,
     _rev: string,
     date: string,
-    tree: OldTree
+    tree: OldNode,
 }
 
-interface OldTree {
+// old version of node to convert, from database
+interface OldNode {
     text: string,
-    children?: OldTree[],
+    children?: OldNode[],
     genome_uuid?: string,
 }
 
+// new version of tree, converted
 interface NewTree {
-    (key: number): Node[],
-    (key: number): Node[]
+    _id: string,
+    _rev: string,
+    date: string,
+    tree: {
+        root: NewNode[]
+    },
 }
 
-interface Node {
+// new version of node, converted
+interface NewNode {
     key: key,
     label: string,
     genome_uuid?: string,
-    children?: Node[],
+    children?: NewNode[],
     checked?: boolean,
     selectable?: boolean,
     style?: string,
@@ -42,9 +50,25 @@ type key = string | number;
 
 interface FinalSelection {
     (key: key): {
-        filterObj: Node[],
+        filterObj: NewNode[],
         labels: string[],
     }
 }
 
-export { SelectedKeys, ExpandedKeys, NewTree, OldTree, Node, DatabaseTree, FinalSelection }
+function isOldTree(tree: OldTree | OldNode): tree is OldTree {
+    return (tree as OldTree).tree !== undefined
+}
+
+// returns children to convert
+function getChildren(tree: OldNode): any { // OldNode | undefined
+    if (tree.children) { return tree.children }
+}
+
+function isOldNode(tree: OldTree | OldNode): tree is OldNode {
+    return (tree as OldNode).text !== undefined
+}
+
+export {
+    SelectedKeys, ExpandedKeys, NewTree, OldNode, NewNode, OldTree, FinalSelection,
+    isOldTree, isOldNode, getChildren
+}
