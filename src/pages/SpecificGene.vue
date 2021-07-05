@@ -59,7 +59,7 @@
     <div v-else>
       <div class="col-span-2 px-4 py-2 mx-5 border border-gray-400 bg-gray-100">
         <p class="font-bold">Your query is :</p>
-        <p class="overflow-auto h-20" style="word-wrap: break-word">
+        <p class="overflow-auto h-30 text-s" style="word-wrap: break-word">
           {{ seq }}
         </p>
       </div>

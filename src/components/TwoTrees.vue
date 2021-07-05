@@ -256,6 +256,11 @@ export default defineComponent({
   props: ["category", "sequence"],
   components: { TaxonomicTree },
   setup(props, { emit }) {
+    
+    const treeWrapper1 = new TreeWrapper();
+    const treeWrapper2 = new TreeWrapper();
+    const treeService = new TaxonomyService();
+
     onMounted(() => {
       treeService.getTree().then((coll) => {
         treeWrapper1.newTree = coll.newTree.root;
@@ -268,10 +273,6 @@ export default defineComponent({
       });
     });
 
-    const treeWrapper1 = new TreeWrapper();
-    const treeWrapper2 = new TreeWrapper();
-    const treeService = new TaxonomyService();
-
     const resetBrowse = (treeNb: number) => {
       if (
         treeWrapper1.newTree != undefined &&
@@ -282,10 +283,12 @@ export default defineComponent({
 
         if (treeNb === 1 && tree1) {
           for (const key in Object.entries(tree1)) {
+            tree2[key].checked = false;
             browse(tree2[key], true);
           }
         } else if (treeNb === 2 && tree2) {
           for (const key in Object.entries(tree2)) {
+            tree1[key].checked = false;
             browse(tree1[key], true);
           }
         }
@@ -370,10 +373,8 @@ export default defineComponent({
 
     // enable or disable the selection of leaves in a tree
     const browse = (node: NewNode, activate: boolean) => {
-      if (!node.checked) {
-        node.selectable = activate ? true : false;
-        node.style = activate ? "color:#495057" : "color:#cccccc";
-      }
+      node.selectable = activate ? true : false;
+      node.style = activate ? "color:#495057" : "color:#cccccc";
       if (node.children) {
         node.children.forEach((child: NewNode) => browse(child, activate));
       }
