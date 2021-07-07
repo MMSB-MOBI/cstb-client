@@ -8,8 +8,9 @@
     :job_tag="data.tag"
     :total_hits="data.number_hits"
     :excluded_names="data.not_in"
-    :gene="data.gene"
+    :gene="JSON.stringify(data.gene)"
   />
+  <!-- :gene="data.gene" -->
   <div v-else class="grid place-content-center">
     <SyncLoader class="m-20"/>
     <!-- <p>Processing your request</p> -->
@@ -28,6 +29,9 @@ export default defineComponent({
     const socket: any = inject("socket");
 
     socket.on("allGenomesResults", (response: any) => {
+      console.log(response.data_card)
+      console.log(typeof(response.data_card));
+      
       data.value = response;
       dataLoad.value = true;
     });
