@@ -10,10 +10,8 @@
     :excluded_names="data.not_in"
     :gene="JSON.stringify(data.gene)"
   />
-  <!-- :gene="data.gene" -->
   <div v-else class="grid place-content-center">
     <SyncLoader class="m-20"/>
-    <!-- <p>Processing your request</p> -->
   </div>
 </template>
 
