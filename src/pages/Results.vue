@@ -11,25 +11,32 @@
     :gene="JSON.stringify(data.gene)"
   />
   <div v-else class="grid place-content-center">
-    <SyncLoader class="m-20"/>
+    <SyncLoader class="m-20" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref } from "vue";
+import { defineComponent, inject, ref, onMounted } from "vue";
 import SyncLoader from "vue-spinner/src/SyncLoader.vue";
 
 export default defineComponent({
   components: { SyncLoader },
   setup() {
+    onMounted(() => {
+      let externalScript1 = document.createElement("script");
+      externalScript1.setAttribute("src", "https://d3js.org/d3.v4.js");
+      document.head.appendChild(externalScript1);
+
+      let externalScript2 = document.createElement("script");
+      externalScript2.setAttribute("src", "https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js");
+      document.head.appendChild(externalScript2);
+    });
+
     const data = ref();
     const dataLoad = ref(false);
     const socket: any = inject("socket");
 
     socket.on("allGenomesResults", (response: any) => {
-      console.log(response.data_card)
-      console.log(typeof(response.data_card));
-      
       data.value = response;
       dataLoad.value = true;
     });
