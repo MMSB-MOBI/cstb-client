@@ -41,6 +41,12 @@ export default defineComponent({
       dataLoad.value = true;
     });
 
+    socket.on('exception', (response:any) => {
+      if (response.hasOwnProperty('status')) alert(response.message);
+      if (response.hasOwnProperty('emptySearch')) alert(response.message);
+      if (response.hasOwnProperty('error')) alert(response.message);
+    })
+
     socket.on("specificGeneResults", (response: any) => {
       data.value = response;
       dataLoad.value = true;

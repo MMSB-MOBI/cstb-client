@@ -475,6 +475,10 @@ export default defineComponent({
           const pid = (
             document.getElementById("percent_identity") as HTMLInputElement
           ).value;
+          if (parseInt(pid) < 0 || parseInt(pid) > 100) {
+            alert("The percentage identity must be between 0 and 100.");
+            return;
+          }
           const seq = props.sequence;
           inputData.value = {
             gi,

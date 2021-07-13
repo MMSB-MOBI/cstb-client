@@ -117,6 +117,7 @@ export default defineComponent({
     };
 
     const seq: Ref<string | undefined> = ref();
+    
     // const format = (fasta: string) => {
     //   // display of fasta query in blocks header + 70nt
     //   var newFasta = "";
@@ -143,16 +144,23 @@ export default defineComponent({
     //   return newFasta;
     // };
 
-    const next = () => {
-      seq.value = (
-        document.getElementById("sequence") as HTMLInputElement
-      ).value;
-
+    const verifyFasta = (sequence: string) => {
       const fasta = /(^>[^]+\n[acgtACGT\s]+$)|(^[acgtACGT\s]+$)/;
+      let nbSeq = 0;
+      const splitSeq = sequence.split("\n");
 
-      if (seq.value !== "") {
-        if (fasta.test(seq.value)) {
-          // seq.value = format(seq.value);
+      if (sequence !== "") { // empty sequence
+        if (fasta.test(sequence)) { // sequence in fasta
+          for (let i = 0; i < splitSeq.length; i++) { // test number of sequences
+            if (splitSeq[i][0] == ">") {
+              nbSeq += 1;
+              if (nbSeq > 1) {
+                alert("More than one sequence.")
+                return;
+              }
+            }
+          }
+          // sequence = format(sequence);
           checked.value = true;
         } else {
           alert("Sequence not in fasta format");
@@ -160,6 +168,13 @@ export default defineComponent({
       } else {
         alert("Empty sequence.");
       }
+    };
+
+    const next = () => {
+      seq.value = (
+        document.getElementById("sequence") as HTMLInputElement
+      ).value;
+      verifyFasta(seq.value);
     };
 
     const router = useRouter();
