@@ -24,7 +24,6 @@
     <Tree
       :value="tree"
       :filter="true"
-      filterMode="strict"
       :expandedKeys="expandedKeys"
       selectionMode="checkbox"
       v-model:selectionKeys="selectedKeys"

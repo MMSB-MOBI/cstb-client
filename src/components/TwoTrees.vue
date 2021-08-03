@@ -256,7 +256,6 @@ export default defineComponent({
   props: ["category", "sequence"],
   components: { TaxonomicTree },
   setup(props, { emit }) {
-    
     const treeWrapper1 = new TreeWrapper();
     const treeWrapper2 = new TreeWrapper();
     const treeService = new TaxonomyService();
@@ -310,7 +309,9 @@ export default defineComponent({
     const selectLeaf = (node: NewNode, leaf: NewNode[]) => {
       if (node.children) {
         node.children.forEach((child: NewNode) => {
-          selectLeaf(child, leaf);
+          if (child.selectable !== false) {
+            selectLeaf(child, leaf);
+          }
         });
       } else {
         leaf.push(node);
@@ -324,12 +325,24 @@ export default defineComponent({
       selectedKeys: SelectedKeys,
       nodeSelected: boolean
     ) => {
+      console.log(node);
+      
       currentWrapper.selectedKeys = selectedKeys.value;
       node.checked = nodeSelected ? true : false;
+
+      // same node of the other tree
       const node2 = currentWrapper.getBrowsableNode(
         node,
         otherWrapper.newTreeIndex
       );
+
+      // cannot check a disabled node, to finish !
+      if (node.selectable === false) {
+        node.checked = undefined;
+        return;
+      }
+
+      // select a node disable the same node in the other tree
       if (node2 && nodeSelected) {
         selectLeaf(node, currentWrapper.finalSelection);
         browse(node2, false);
@@ -372,11 +385,15 @@ export default defineComponent({
     };
 
     // enable or disable the selection of leaves in a tree
-    const browse = (node: NewNode, activate: boolean) => {
-      node.selectable = activate ? true : false;
-      node.style = activate ? "color:#495057" : "color:#cccccc";
-      if (node.children) {
-        node.children.forEach((child: NewNode) => browse(child, activate));
+    const browse = (node2: NewNode, activate: boolean) => {
+      node2.selectable = activate ? true : false;
+      node2.checked = activate ? false : true;
+      node2.style = activate ? "color:#495057" : "color:#cccccc";
+      if (node2.children) {
+        node2.children.forEach((child: NewNode) => {
+          if (child.checked === true) return;
+          browse(child, activate);
+        });
       }
     };
 
@@ -524,6 +541,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style>
-</style>
