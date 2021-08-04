@@ -325,8 +325,6 @@ export default defineComponent({
       selectedKeys: SelectedKeys,
       nodeSelected: boolean
     ) => {
-      console.log(node);
-      
       currentWrapper.selectedKeys = selectedKeys.value;
       node.checked = nodeSelected ? true : false;
 
@@ -387,10 +385,10 @@ export default defineComponent({
     // enable or disable the selection of leaves in a tree
     const browse = (node2: NewNode, activate: boolean) => {
       node2.selectable = activate ? true : false;
-      node2.checked = activate ? false : true;
+      node2.checked = activate ? undefined : false;
       node2.style = activate ? "color:#495057" : "color:#cccccc";
       if (node2.children) {
-        node2.children.forEach((child: NewNode) => {
+        node2.children.forEach((child: NewNode) => {          
           if (child.checked === true) return;
           browse(child, activate);
         });
