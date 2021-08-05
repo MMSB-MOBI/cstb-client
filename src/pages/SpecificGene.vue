@@ -117,7 +117,7 @@ export default defineComponent({
     };
 
     const seq: Ref<string | undefined> = ref();
-    
+
     // const format = (fasta: string) => {
     //   // display of fasta query in blocks header + 70nt
     //   var newFasta = "";
@@ -149,13 +149,16 @@ export default defineComponent({
       let nbSeq = 0;
       const splitSeq = sequence.split("\n");
 
-      if (sequence !== "") { // empty sequence
-        if (fasta.test(sequence)) { // sequence in fasta
-          for (let i = 0; i < splitSeq.length; i++) { // test number of sequences
+      if (sequence !== "") {
+        // empty sequence
+        if (fasta.test(sequence)) {
+          // sequence in fasta
+          for (let i = 0; i < splitSeq.length; i++) {
+            // test number of sequences
             if (splitSeq[i][0] == ">") {
               nbSeq += 1;
               if (nbSeq > 1) {
-                alert("More than one sequence.")
+                alert("More than one sequence.");
                 return;
               }
             }

@@ -11,14 +11,13 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import TwoTrees from "../components/TwoTrees.vue";
 import { useRouter } from "vue-router";
+import TwoTrees from "../components/TwoTrees.vue";
 
 export default defineComponent({
   components: { TwoTrees },
   setup() {
     const router = useRouter();
-
     const resultsPage = () => {
       router.replace("/results");
     };

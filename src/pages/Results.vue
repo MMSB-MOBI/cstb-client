@@ -28,7 +28,10 @@ export default defineComponent({
       document.head.appendChild(externalScript1);
 
       let externalScript2 = document.createElement("script");
-      externalScript2.setAttribute("src", "https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js");
+      externalScript2.setAttribute(
+        "src",
+        "https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js"
+      );
       document.head.appendChild(externalScript2);
     });
 
@@ -41,15 +44,15 @@ export default defineComponent({
       dataLoad.value = true;
     });
 
-    socket.on('exception', (response:any) => {
-      if (response.hasOwnProperty('status')) alert(response.message);
-      if (response.hasOwnProperty('emptySearch')) alert(response.message);
-      if (response.hasOwnProperty('error')) alert(response.message);
-    })
-
     socket.on("specificGeneResults", (response: any) => {
       data.value = response;
       dataLoad.value = true;
+    });
+
+    socket.on("exception", (response: any) => {
+      if (response.hasOwnProperty("status")) alert(response.message);
+      if (response.hasOwnProperty("emptySearch")) alert(response.message);
+      if (response.hasOwnProperty("error")) alert(response.message);
     });
 
     return {

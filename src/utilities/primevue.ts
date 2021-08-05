@@ -1,9 +1,12 @@
+/* To refactor */
+
 export default function formatTree(elem: any, key: string, acc: any) {
 
     // find the tree
     if (elem.tree) {
         formatTree(elem.tree, key, acc);
     }
+
     // format the tree, create a root
     else if (elem.text === 'root') {
         elem['root'] = elem.children
@@ -13,6 +16,7 @@ export default function formatTree(elem: any, key: string, acc: any) {
             (child: any, index: number) => { formatTree(child, `${index}`, acc); }
         )
     }
+
     // format the tree
     else {
         acc[key] = elem

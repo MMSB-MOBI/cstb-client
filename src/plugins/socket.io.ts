@@ -7,9 +7,6 @@ export default {
     socket.on("connect_error", (error:any) => {
       console.log("Connection error", error);
     });
-    // socket.on("connect", () => {
-    //   console.log("Connection successfull");
-    // });
     app.config.globalProperties.$socket = socket
     app.provide('socket', socket)
   }

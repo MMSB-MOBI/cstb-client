@@ -44,16 +44,16 @@
 
 <script lang="ts">
 import { defineComponent, ref, Ref, computed } from "vue";
+import { SelectedKeys, ExpandedKeys } from "../types/TreeTypes";
 import Tree from "primevue/tree";
 // import Button from "primevue/button";
-import { SelectedKeys } from "../types/TreeTypes";
 
 export default defineComponent({
   props: ["tree", "updatedSelectedKeys", "updatedExpandedKeys"],
   components: { Tree },
   setup(props, { emit }) {
-    const selectedKeys: Ref<any> = ref({});
-    const expandedKeys: Ref<any> = ref({});
+    const selectedKeys: Ref<SelectedKeys> = ref({});
+    const expandedKeys: Ref<ExpandedKeys> = ref({});
 
     const onNodeSelect = (node: Node) => {
       emit("on-node-select", node, selectedKeys);

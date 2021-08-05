@@ -1,7 +1,15 @@
 <template>
   <router-link to="/">
     <div
-      class="w-full bg-gradient-to-r from-blue-600 to-blue-200 text-white px-4 py-2"
+      class="
+        w-full
+        bg-gradient-to-r
+        from-blue-600
+        to-blue-200
+        text-white
+        px-4
+        py-2
+      "
     >
       <p class="text-center font-bold text-2xl">
         Crispr Search Tool for Bacteria
@@ -22,7 +30,14 @@
     <div class="grid grid-cols-2">
       <router-link v-for="item in list" :key="item.to" :to="item.to">
         <div
-          class="text-center font-bold py-3 bg-gradient-to-r from-yellow-400 to-yellow-100"
+          class="
+            text-center
+            font-bold
+            py-3
+            bg-gradient-to-r
+            from-yellow-400
+            to-yellow-100
+          "
         >
           {{ item.title }}
         </div>

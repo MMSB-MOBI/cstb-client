@@ -250,7 +250,13 @@ import { defineComponent, onMounted, ref, inject } from "vue";
 import TaxonomicTree from "../components/TaxonomicTree.vue";
 import TaxonomyService from "../service/taxonomy";
 import TreeWrapper from "../service/treeWrapper";
-import { SelectedKeys, ExpandedKeys, NewNode } from "../types/TreeTypes";
+import {
+  SelectedKeys,
+  ExpandedKeys,
+  NewNode,
+  // NewTree,
+  // FinalSelection,
+} from "../types/TreeTypes";
 
 export default defineComponent({
   props: ["category", "sequence"],
@@ -388,7 +394,7 @@ export default defineComponent({
       node2.checked = activate ? undefined : false;
       node2.style = activate ? "color:#495057" : "color:#cccccc";
       if (node2.children) {
-        node2.children.forEach((child: NewNode) => {          
+        node2.children.forEach((child: NewNode) => {
           if (child.checked === true) return;
           browse(child, activate);
         });
@@ -396,8 +402,7 @@ export default defineComponent({
     };
 
     // returns the final selection
-    const filterCheckedLeaf = (finalSelection: any) => {
-      // FinalSelection
+    const filterCheckedLeaf = (finalSelection: any /* FinalSelection */) => {
       let filterObj: NewNode[] = [];
       let labels: string[] = [];
       Object.keys(finalSelection).forEach((key) => {

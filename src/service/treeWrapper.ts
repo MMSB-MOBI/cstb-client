@@ -1,5 +1,5 @@
 import { ref, Ref } from 'vue'
-import { ExpandedKeys, NewTree, NewNode, SelectedKeys } from '../types/TreeTypes'
+import { NewTree, NewNode, SelectedKeys, ExpandedKeys } from '../types/TreeTypes'
 
 export default class TreeWrapper {
     private _newTree: Ref<NewTree | undefined> = ref();
