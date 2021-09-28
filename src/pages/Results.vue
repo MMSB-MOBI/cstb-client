@@ -10,6 +10,12 @@
     :excluded_names="data.not_in"
     :gene="JSON.stringify(data.gene)"
   />
+  <div v-else-if="jobException" class="error-div">
+    {{jobExceptionMsg}}
+  </div>
+  <div v-else-if="emptySearch" class="empty-div">
+    This search returns no results : {{emptyMsg}}
+  </div>
   <div v-else class="grid place-content-center">
     <SyncLoader class="m-20" />
   </div>
@@ -37,6 +43,10 @@ export default defineComponent({
 
     const data = ref();
     const dataLoad = ref(false);
+    const jobException = ref(false); 
+    const emptySearch = ref(false); 
+    const emptyMsg = ref(); 
+    const jobExceptionMsg = ref()
     const socket: any = inject("socket");
 
     socket.on("allGenomesResults", (response: any) => {
@@ -49,16 +59,41 @@ export default defineComponent({
       dataLoad.value = true;
     });
 
+    socket.on('emptySearch', (response: any) => {
+      emptySearch.value = true
+      emptyMsg.value = response
+    })
+
     socket.on("exception", (response: any) => {
-      if (response.hasOwnProperty("status")) alert(response.message);
-      if (response.hasOwnProperty("emptySearch")) alert(response.message);
-      if (response.hasOwnProperty("error")) alert(response.message);
+      jobException.value = true
+      jobExceptionMsg.value = response.message
     });
 
     return {
       data,
       dataLoad,
+      jobException,
+      jobExceptionMsg,
+      emptySearch, 
+      emptyMsg
     };
   },
 });
 </script>
+
+<style scoped>
+.error-div{
+  text-align:center;
+  padding:1em;
+  color:#e60000;
+  background-color:#ffe6e6;
+  margin-top:1em; 
+}
+.empty-div{
+  text-align:center;
+  padding:1em;
+  color:#e67300;
+  background-color:#fff2e6;
+  margin-top:1em; 
+}
+</style>
