@@ -39,7 +39,13 @@ export default defineComponent({
         "https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3-scale-radial.js"
       );
       document.head.appendChild(externalScript2);
+
+      const externalScript3 = document.createElement("link")
+      externalScript3.rel = 'stylesheet'
+      externalScript3.href = 'https://fonts.googleapis.com/icon?family=Material+Icons'
+      document.head.appendChild(externalScript3)
     });
+    
 
     const data = ref();
     const dataLoad = ref(false);
