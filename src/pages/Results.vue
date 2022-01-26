@@ -22,13 +22,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref, onMounted } from "vue";
+import { defineComponent, inject, ref, onMounted, watch } from "vue";
 import SyncLoader from "vue-spinner/src/SyncLoader.vue";
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: { SyncLoader },
   setup() {
-    onMounted(() => {
+    const route = useRoute()
+    const data = ref();
+    const dataLoad = ref(false);
+    const jobException = ref(false); 
+    const emptySearch = ref(false); 
+    const emptyMsg = ref(); 
+    const jobExceptionMsg = ref()
+    const socket: any = inject("socket");
+
+    onMounted(() => {   
       let externalScript1 = document.createElement("script");
       externalScript1.setAttribute("src", "https://d3js.org/d3.v4.js");
       document.head.appendChild(externalScript1);
@@ -44,16 +54,19 @@ export default defineComponent({
       externalScript3.rel = 'stylesheet'
       externalScript3.href = 'https://fonts.googleapis.com/icon?family=Material+Icons'
       document.head.appendChild(externalScript3)
-    });
-    
 
-    const data = ref();
-    const dataLoad = ref(false);
-    const jobException = ref(false); 
-    const emptySearch = ref(false); 
-    const emptyMsg = ref(); 
-    const jobExceptionMsg = ref()
-    const socket: any = inject("socket");
+      if(route.params.id) restoreResults(route.params.id)
+
+    });
+
+    const restoreResults = (id: string|string[]) => {
+      if(Array.isArray(id)){
+        jobException.value = true
+        jobExceptionMsg.value = "Can't provide results, unknown error in url structure"
+      }
+
+      socket.emit("restoreResults", {id})
+    }
 
     socket.on("allGenomesResults", (response: any) => {
       data.value = response;

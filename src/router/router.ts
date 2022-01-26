@@ -9,6 +9,7 @@ const routes = [
     { path: '/all-genomes', component: AllGenomes },
     { path: '/specific-gene', component: SpecificGene },
     { path: '/results', component: Results },
+    { path : '/results/:id', component: Results}
 ];
 const router = createRouter({
     routes,
