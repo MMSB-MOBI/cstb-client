@@ -26,6 +26,12 @@ import { defineComponent, inject, ref, onMounted, watch } from "vue";
 import SyncLoader from "vue-spinner/src/SyncLoader.vue";
 import { useRoute } from 'vue-router'
 
+interface BadRequestMinimal {
+  statusCode: number;
+  message: string[];
+  error: string;
+}
+
 export default defineComponent({
   components: { SyncLoader },
   setup() {
@@ -87,6 +93,12 @@ export default defineComponent({
       jobException.value = true
       jobExceptionMsg.value = response.message
     });
+
+    socket.on("badRequestException", (error: BadRequestMinimal) => {
+      console.log(error)
+      jobException.value = true; 
+      jobExceptionMsg.value = `Error with input data : ${error.message}`
+    })
 
     return {
       data,
