@@ -27,6 +27,8 @@
       :expandedKeys="expandedKeys"
       selectionMode="checkbox"
       v-model:selectionKeys="selectedKeys"
+      v-model:filteredKeys="filteredKeys"
+      v-model:filterText="filterText"
       @node-select="onNodeSelect"
       @node-unselect="onNodeUnselect"
       @node-expand="onNodeExpand"
@@ -43,10 +45,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, computed } from "vue";
-import { SelectedKeys, ExpandedKeys } from "../types/TreeTypes";
-import Tree from "primevue/tree";
-// import Button from "primevue/button";
+import { defineComponent, ref, Ref, computed, onUpdated, watch } from "vue";
+import { SelectedKeys, ExpandedKeys, NewNode } from "../types/TreeTypes";
+import Tree from "@mmsb/primevue-forked/tree";
+// import Button from "@mmsb/primevue-forked/button";
 
 export default defineComponent({
   props: ["tree", "updatedSelectedKeys", "updatedExpandedKeys"],
@@ -54,6 +56,10 @@ export default defineComponent({
   setup(props, { emit }) {
     const selectedKeys: Ref<SelectedKeys> = ref({});
     const expandedKeys: Ref<ExpandedKeys> = ref({});
+    const filteredKeys: Ref<NewNode[]> = ref([]); 
+    const filterText : Ref<string> = ref(""); 
+    const timeout : Ref<number|undefined> = ref()
+    const showLoader : Ref<boolean> = ref(false); 
 
     const onNodeSelect = (node: Node) => {
       emit("on-node-select", node, selectedKeys);
@@ -73,6 +79,37 @@ export default defineComponent({
       emit("reset-tree");
     };
 
+    /**Open the tree given in nodes, regarding to search expression. 
+     * In each path, will open until the firt parent that match the search.
+     */
+    const BFSAndStopTree = (nodes:NewNode[], search:string) => {
+      let newList: NewNode[] = []
+      for(const node of nodes) {
+        if(!(node.label.toLowerCase().includes(search))){
+          expandedKeys.value[node.key] = true
+          if(node.children){
+            newList = newList.concat(node.children)
+          }
+        }   
+      }  
+      if (newList.length >  0) BFSAndStopTree(newList, search)
+    }
+    
+
+    watch(filteredKeys, (current: NewNode[]) => {
+      if(! filterText.value){ //if we search nothing
+        expandedKeys.value = {}
+        return
+      }
+      if(timeout.value){
+        clearTimeout(timeout.value)
+      }
+      timeout.value = setTimeout(() => {
+        expandedKeys.value = {}
+        if(filterText.value) BFSAndStopTree(current, filterText.value)
+      }, 500)
+    })
+
     if (props.updatedSelectedKeys) {
       const newSelectedKeys = computed(() => {
         return props.updatedSelectedKeys;
@@ -87,26 +124,6 @@ export default defineComponent({
       expandedKeys.value = newExpandedKeys.value;
     }
 
-    // const expandAll = () => {
-    //   for (let node of nodes.value) {
-    //     expandNode(node);
-    //   }
-    //   expandedKeys.value = { ...expandedKeys.value };
-    // };
-
-    // const expandNode = (node: any) => {
-    //   if (node.children && node.children.length) {
-    //     expandedKeys.value[node.key] = true;
-    //     for (let child of node.children) {
-    //       expandNode(child);
-    //     }
-    //   }
-    // };
-
-    // const collapseAll = () => {
-    //   expandedKeys.value = {};
-    // };
-
     return {
       onNodeSelect,
       onNodeUnselect,
@@ -114,6 +131,8 @@ export default defineComponent({
       expandedKeys,
       selectedKeys,
       resetTree,
+      filteredKeys,
+      filterText
     };
   },
 });

@@ -75,7 +75,7 @@
 <script lang="ts">
 import { defineComponent, ref, Ref } from "vue";
 import TwoTrees from "../components/TwoTrees.vue";
-import FileUpload from "primevue/fileupload";
+import FileUpload from "@mmsb/primevue-forked/fileupload";
 import { useRouter } from "vue-router";
 
 export default defineComponent({

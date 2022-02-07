@@ -2,11 +2,11 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from "./router/router"
 import Socketio from './plugins/socket.io'
-import PrimeVue from 'primevue/config';
+import PrimeVue from '@mmsb/primevue-forked/config';
 import { defineCustomElements } from '@mmsb/result_page/dist/loader';
 
-import 'primevue/resources/themes/saga-blue/theme.css'
-import 'primevue/resources/primevue.min.css'
+import '@mmsb/primevue-forked/resources/themes/saga-blue/theme.css'
+import '@mmsb/primevue-forked/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 import "./assets/style.css"
 

@@ -6,8 +6,7 @@ interface SelectedKeys {
 }
 
 interface ExpandedKeys {
-    checked?: boolean,
-    partialChecked?: boolean
+    [key: string] : boolean
 }
 
 // old version of tree to convert, from database
@@ -37,7 +36,7 @@ interface NewTree {
 
 // new version of node, converted
 interface NewNode {
-    key: key,
+    key: string,
     label: string,
     genome_uuid?: string,
     children?: NewNode[],
