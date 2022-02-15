@@ -1,6 +1,5 @@
 <template>
   <Message class="here-message" v-if="dataLoad && !data.sended_mail" severity="warn">Error with email : email to restore results has not been send</Message>
-  <Button> Download complete results </Button>
   <result-page
     v-if="dataLoad"
     :all_data="data.data_card"
@@ -28,7 +27,6 @@ import { defineComponent, inject, ref, onMounted } from "vue";
 import SyncLoader from "vue-spinner/src/SyncLoader.vue";
 import { useRoute } from 'vue-router'
 import Message from '@mmsb/primevue-forked/message'; 
-import Button from '@mmsb/primevue-forked/button'
 
 interface BadRequestMinimal {
   statusCode: number;
@@ -37,7 +35,7 @@ interface BadRequestMinimal {
 }
 
 export default defineComponent({
-  components: { SyncLoader, Message, Button },
+  components: { SyncLoader, Message },
   setup() {
     const route = useRoute()
     const data = ref();
@@ -107,7 +105,7 @@ export default defineComponent({
       jobException.value = true; 
       jobExceptionMsg.value = `Error with input data : ${error.message}`
     })
-    
+
     return {
       data,
       dataLoad,
