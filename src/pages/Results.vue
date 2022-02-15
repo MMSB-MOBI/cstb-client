@@ -1,4 +1,6 @@
 <template>
+  <Message class="here-message" v-if="dataLoad && !data.sended_mail" severity="warn">Error with email : email to restore results has not been send</Message>
+  <Button> Download complete results </Button>
   <result-page
     v-if="dataLoad"
     :all_data="data.data_card"
@@ -22,9 +24,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref, onMounted, watch } from "vue";
+import { defineComponent, inject, ref, onMounted } from "vue";
 import SyncLoader from "vue-spinner/src/SyncLoader.vue";
 import { useRoute } from 'vue-router'
+import Message from '@mmsb/primevue-forked/message'; 
+import Button from '@mmsb/primevue-forked/button'
 
 interface BadRequestMinimal {
   statusCode: number;
@@ -33,7 +37,7 @@ interface BadRequestMinimal {
 }
 
 export default defineComponent({
-  components: { SyncLoader },
+  components: { SyncLoader, Message, Button },
   setup() {
     const route = useRoute()
     const data = ref();
@@ -61,8 +65,12 @@ export default defineComponent({
       externalScript3.href = 'https://fonts.googleapis.com/icon?family=Material+Icons'
       document.head.appendChild(externalScript3)
 
-      if(route.params.id) restoreResults(route.params.id)
+      const externalScript4 = document.createElement("link")
+      externalScript4.rel = 'stylesheet'
+      externalScript4.href = 'https://www.w3schools.com/w3css/4/w3.css'
+      document.head.appendChild(externalScript4)
 
+      if (route.path.startsWith('/results/') && route.params.id) restoreResults(route.params.id)
     });
 
     const restoreResults = (id: string|string[]) => {
@@ -99,7 +107,7 @@ export default defineComponent({
       jobException.value = true; 
       jobExceptionMsg.value = `Error with input data : ${error.message}`
     })
-
+    
     return {
       data,
       dataLoad,
@@ -112,7 +120,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style>
 .error-div{
   text-align:center;
   padding:1em;
@@ -126,5 +134,11 @@ export default defineComponent({
   color:#e67300;
   background-color:#fff2e6;
   margin-top:1em; 
+}
+.here-message{
+  margin: 0.5rem 2rem !important;
+}
+.here-message .p-message-wrapper {
+  padding: 0.5rem 1rem !important
 }
 </style>

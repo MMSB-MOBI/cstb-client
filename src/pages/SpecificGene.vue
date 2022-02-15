@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="py-5 px-3">
+    <p class="py-5 px-3" style="text-align:center">
       Here you can search for sgRNA construct(s) in one or more bacterial
       genomes to use in CRISPRinterference. You must input a sequence, whose
       homologs will be found in selected bacteria, and common sgRNAs, if they
@@ -8,20 +8,20 @@
       avoid sgRNA hybridisation.
     </p>
 
-    <div v-if="!checked" class="grid grid-cols-2">
-      <div class="px-7">
+    <div v-if="!checked" style="display:grid; grid-template-columns:1fr 1fr; column-gap:2em" class="mr-5 ml-5">
+      <div style>
         <p class="py-2 text-2xl">Paste here your own sequence...</p>
         <textarea
           id="sequence"
           rows="10"
           cols="60"
           class="px-5 py-3 border border-gray-500 bg-gray-100"
-          style="font-family: 'Courier New', Courier, monospace"
+          style="font-family: 'Courier New', Courier, monospace; width:100%"
           v-model="seqFromFile"
         />
       </div>
 
-      <div class="px-7">
+      <div style>
         <p class="py-2 text-2xl">or upload a fasta file.</p>
         <div class="flex flex-col space-y-5">
           <FileUpload
@@ -37,22 +37,12 @@
         </div>
       </div>
 
-      <div class="col-span-2 py-7 text-center">
-        <button
+      <div style="grid-column:2">
+        <Button
           @click="next"
-          class="
-            py-3
-            px-7
-            text-white
-            font-bold
-            bg-green-500
-            border
-            rounded
-            border-gray-500
-          "
         >
           Next >>
-        </button>
+        </Button>
       </div>
     </div>
 
@@ -76,10 +66,11 @@
 import { defineComponent, ref, Ref } from "vue";
 import TwoTrees from "../components/TwoTrees.vue";
 import FileUpload from "@mmsb/primevue-forked/fileupload";
+import Button from '@mmsb/primevue-forked/button'; 
 import { useRouter } from "vue-router";
 
 export default defineComponent({
-  components: { TwoTrees, FileUpload },
+  components: { TwoTrees, FileUpload, Button },
   setup() {
     const checked = ref(false);
     const seqFromFile = ref();

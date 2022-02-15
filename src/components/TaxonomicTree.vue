@@ -1,26 +1,5 @@
 <template>
   <div>
-    <!-- <div class="flex mt-3 mb-3">
-      <div>
-        <Button
-          type="button"
-          icon="pi pi-plus"
-          label="Expand All"
-          @click="expandAll"
-          :nodes="nodes"
-        />
-      </div>
-
-      <div>
-        <Button
-          type="button"
-          icon="pi pi-plus"
-          label="Collapse All"
-          @click="collapseAll"
-        />
-      </div>
-    </div> -->
-
     <Tree
       :value="tree"
       :filter="true"
@@ -35,12 +14,12 @@
       @reset-tree="resetTree"
     />
 
-    <button
+    <Button
       @click="resetTree"
-      class="my-1 p-1 bg-red-500 border border-gray-500 rounded text-white"
+      class="p-button-sm"
     >
       Reset tree
-    </button>
+    </Button>
   </div>
 </template>
 
@@ -48,18 +27,18 @@
 import { defineComponent, ref, Ref, computed, onUpdated, watch } from "vue";
 import { SelectedKeys, ExpandedKeys, NewNode } from "../types/TreeTypes";
 import Tree from "@mmsb/primevue-forked/tree";
+import Button from '@mmsb/primevue-forked/button'
 // import Button from "@mmsb/primevue-forked/button";
 
 export default defineComponent({
   props: ["tree", "updatedSelectedKeys", "updatedExpandedKeys"],
-  components: { Tree },
+  components: { Tree, Button },
   setup(props, { emit }) {
     const selectedKeys: Ref<SelectedKeys> = ref({});
     const expandedKeys: Ref<ExpandedKeys> = ref({});
     const filteredKeys: Ref<NewNode[]> = ref([]); 
     const filterText : Ref<string> = ref(""); 
     const timeout : Ref<number|undefined> = ref()
-    const showLoader : Ref<boolean> = ref(false); 
 
     const onNodeSelect = (node: Node) => {
       emit("on-node-select", node, selectedKeys);

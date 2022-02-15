@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full bg-gradient-to-r from-blue-600 to-blue-200 text-white py-1"
+    class="w-full bg-gray-100 py-1"
   >
     <p class="text-center text-sm">Contact : cstb-support@ibcp.fr</p>
     <p class="text-center text-sm">

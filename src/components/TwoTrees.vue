@@ -1,6 +1,6 @@
 <template>
-  <div v-if="!submitted" class="grid grid-cols-2">
-    <div class="px-5 py-3">
+  <div v-if="!submitted" class="twotrees-wrapper">
+    <div style="margin:2px">
       <p class="text-center font-bold text-3xl py-3">Organisms to target</p>
       <TaxonomicTree
         :tree="treeWrapper1.newTree"
@@ -13,7 +13,7 @@
       />
     </div>
 
-    <div class="px-5 py-3">
+    <div>
       <p class="text-center font-bold text-3xl py-3">Organisms to exclude</p>
       <TaxonomicTree
         :tree="treeWrapper2.newTree"
@@ -26,27 +26,19 @@
       />
     </div>
 
-    <div class="col-span-2 py-2 text-center">
-      <button
+    <div style="grid-column:2">
+      <Button
         @click="submitSelection"
-        class="
-          p-3
-          text-white
-          font-bold
-          bg-green-500
-          border
-          rounded
-          border-gray-500
-        "
+        class="p-button-lg"
       >
         Submit selections
-      </button>
+      </Button>
     </div>
   </div>
 
-  <div v-else class="grid grid-cols-2">
-    <div class="px-5 py-3">
-      <p class="text-center py-1 text-green-500 font-bold">
+  <div v-else class="grid grid-cols-2 mr-5 ml-5" style="column-gap:2em">
+    <div class="py-3">
+      <p class="text-center py-1 text-red-500 font-bold">
         List of bacteria will be targeted:
       </p>
       <div
@@ -58,8 +50,8 @@
       </div>
     </div>
 
-    <div class="px-5 py-3">
-      <p class="text-center py-1 text-red-500 font-bold">
+    <div class="py-3">
+      <p class="text-center py-1 text-green-500 font-bold">
         List of bacteria without target:
       </p>
       <div
@@ -73,38 +65,20 @@
 
     <div v-if="!displayParameters" class="py-5 col-span-2 text-center">
       <p class="py-2 font-bold">Confirm your selection ?</p>
-      <button
+      <div style="display:flex; justify-content:center; column-gap:1em">
+        <Button
         @click="confirmedSelect"
-        class="
-          mx-2
-          py-3
-          px-4
-          text-white
-          font-bold
-          bg-green-500
-          border
-          rounded
-          border-gray-500
-        "
+          class="p-button-outlined"
       >
         Yes
-      </button>
-      <button
+        </Button>
+        <Button
         @click="notConfirmedSelect"
-        class="
-          mx-2
-          py-3
-          px-4
-          text-white
-          font-bold
-          bg-red-500
-          border
-          rounded
-          border-gray-500
-        "
+          class="p-button-outlined"
       >
         No
-      </button>
+        </Button>
+      </div>
     </div>
 
     <div v-else class="col-span-2">
@@ -150,21 +124,14 @@
         </div>
 
         <div class="col-span-3 px-5 py-2 text-right">
-          <button
+          <Button
             @click="submitRequest"
             class="
-              p-3
-              text-white text-2xl
-              font-bold
-              bg-gradient-to-r
-              from-green-700
-              to-green-400
-              rounded
-              border border-black
+              p-button-lg
             "
           >
             Submit >>
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -224,21 +191,11 @@
         </div>
 
         <div class="col-span-4 px-5 py-2 text-right">
-          <button
+          <Button
             @click="submitRequest"
-            class="
-              p-3
-              text-white text-2xl
-              font-bold
-              bg-gradient-to-r
-              from-green-700
-              to-green-400
-              rounded
-              border border-black
-            "
           >
             Submit >>
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -250,6 +207,7 @@ import { defineComponent, onMounted, ref, inject } from "vue";
 import TaxonomicTree from "../components/TaxonomicTree.vue";
 import TaxonomyService from "../service/taxonomy";
 import TreeWrapper from "../service/treeWrapper";
+import Button from '@mmsb/primevue-forked/button'
 import {
   SelectedKeys,
   ExpandedKeys,
@@ -260,7 +218,7 @@ import {
 
 export default defineComponent({
   props: ["category", "sequence"],
-  components: { TaxonomicTree },
+  components: { TaxonomicTree, Button },
   setup(props, { emit }) {
     const treeWrapper1 = new TreeWrapper();
     const treeWrapper2 = new TreeWrapper();
@@ -544,3 +502,22 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.twotrees-wrapper{
+  display:grid; 
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap:2em; 
+}
+.parameter{
+  flex-grow:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center; 
+  padding:1rem; 
+  border-width:1px; 
+  border-color: rgba(156, 163, 175);
+  border-radius: 0.25rem;
+  background-color: rgba(243, 244, 246); 
+}
+</style>
