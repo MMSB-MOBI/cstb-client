@@ -1,5 +1,5 @@
 <template>
-  <Message class="here-message" v-if="dataLoad && !data.sended_mail" severity="warn">Error with email : email to restore results has not been send</Message>
+  <Message class="here-message" v-if="dataLoad && !data.mail_sended" severity="warn">Error with email : email to restore results has not been send</Message>
   <result-page
     v-if="dataLoad"
     :all_data="data.data_card"
@@ -81,6 +81,7 @@ export default defineComponent({
     }
 
     socket.on("allGenomesResults", (response: any) => {
+      console.log("sended_mail", response.mail_sended)
       data.value = response;
       dataLoad.value = true;
     });
